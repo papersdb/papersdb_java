@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import edu.ualberta.cs.papersdb.model.publication.Publication;
@@ -33,7 +36,6 @@ public class Paper implements Serializable {
     private Date date;
     private String submittedBy;
     private String userTags;
-    private Ranking ranking;
     private String customRanking;
     private String doi;
     private Set<Collaboration> collaborations;
@@ -127,6 +129,18 @@ public class Paper implements Serializable {
 
     public void setDoi(String doi) {
         this.doi = doi;
+    }
+
+    @ElementCollection
+    @CollectionTable(name = "PAPER_COLLABORATION", joinColumns = @JoinColumn(name = "PAPER_ID"))
+    @Column(name = "COLLABORATION_ID")
+    @Type(type = "collaboration")
+    public Set<Collaboration> getCollaborations() {
+        return collaborations;
+    }
+
+    public void setCollaborations(Set<Collaboration> collaborations) {
+        this.collaborations = collaborations;
     }
 
     @ManyToMany(fetch = FetchType.LAZY)
