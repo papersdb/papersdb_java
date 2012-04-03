@@ -143,6 +143,15 @@ public class Paper implements Serializable {
         this.collaborations = collaborations;
     }
 
+    @Column(name = "PUBLIC")
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "AUTHOR_PAPER",
         joinColumns = { @JoinColumn(name = "PAPER_ID", nullable = false, updatable = false) },
