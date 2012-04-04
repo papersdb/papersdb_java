@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -14,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -164,14 +167,43 @@ public class Paper implements Serializable {
         this.authors = authors;
     }
 
-    // @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy =
-    // "paper")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "paper", orphanRemoval = true)
     public Publication getPublication() {
         return publication;
     }
 
     public void setPublication(Publication publication) {
         this.publication = publication;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "PAPER_PAPER",
+        joinColumns = { @JoinColumn(name = "FROM_PAPER_ID", nullable = false, updatable = false) },
+        inverseJoinColumns = { @JoinColumn(name = "TO_PAPER_ID", nullable = false, updatable = false) })
+    public Set<Paper> getRelatedPapers() {
+        return relatedPapers;
+    }
+
+    public void setRelatedPapers(Set<Paper> relatedPapers) {
+        this.relatedPapers = relatedPapers;
+    }
+
+    @OneToMany(cascade = { CascadeType.ALL })
+    public Set<String> getRelatedUrls() {
+        return relatedUrls;
+    }
+
+    public void setRelatedUrls(Set<String> relatedUrls) {
+        this.relatedUrls = relatedUrls;
+    }
+
+    @OneToMany(cascade = { CascadeType.ALL })
+    public Set<String> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(Set<String> attachments) {
+        this.attachments = attachments;
     }
 
 }
