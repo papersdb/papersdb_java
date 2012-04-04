@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -134,9 +133,9 @@ public class Paper implements Serializable {
         this.doi = doi;
     }
 
-    @ElementCollection
+    @ElementCollection(targetClass = Collaboration.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "PAPER_COLLABORATION", joinColumns = @JoinColumn(name = "PAPER_ID"))
-    @Column(name = "COLLABORATION_ID")
+    @Column(name = "COLLABORATION_ID", nullable = false)
     @Type(type = "collaboration")
     public Set<Collaboration> getCollaborations() {
         return collaborations;
@@ -188,7 +187,9 @@ public class Paper implements Serializable {
         this.relatedPapers = relatedPapers;
     }
 
-    @OneToMany(cascade = { CascadeType.ALL })
+    @ElementCollection
+    @CollectionTable(name = "PAPER_URL", joinColumns = @JoinColumn(name = "PAPER_ID"))
+    @Column(name = "URL")
     public Set<String> getRelatedUrls() {
         return relatedUrls;
     }
@@ -197,7 +198,9 @@ public class Paper implements Serializable {
         this.relatedUrls = relatedUrls;
     }
 
-    @OneToMany(cascade = { CascadeType.ALL })
+    @ElementCollection
+    @CollectionTable(name = "PAPER_ATTACHMENT", joinColumns = @JoinColumn(name = "PAPER_ID"))
+    @Column(name = "ATTACHMENT")
     public Set<String> getAttachments() {
         return attachments;
     }

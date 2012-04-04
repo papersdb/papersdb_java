@@ -3,6 +3,7 @@ package edu.ualberta.cs.papersdb.model.publication;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -14,6 +15,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -74,8 +76,7 @@ public class Publication implements Serializable {
         this.publisher = publisher;
     }
 
-    // @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy =
-    // "PAPER_ID")
+    @OneToOne(cascade = CascadeType.ALL)
     public Paper getPaper() {
         return paper;
     }
