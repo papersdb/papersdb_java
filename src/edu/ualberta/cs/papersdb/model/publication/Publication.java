@@ -77,6 +77,7 @@ public class Publication implements Serializable {
     }
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "PAPER_ID")
     public Paper getPaper() {
         return paper;
     }

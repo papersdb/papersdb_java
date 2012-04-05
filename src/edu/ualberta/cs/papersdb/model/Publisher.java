@@ -4,12 +4,13 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "PUBLISHER")
@@ -37,7 +38,8 @@ public class Publisher implements Serializable {
     }
 
     @Column(name = "RANKING_ID")
-    @Type(type = "ranking")
+    @Enumerated(EnumType.STRING)
+    // @Type(type = "ranking")
     public Ranking getRanking() {
         return ranking;
     }

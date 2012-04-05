@@ -9,6 +9,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -21,7 +23,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import edu.ualberta.cs.papersdb.model.publication.Publication;
@@ -136,7 +137,8 @@ public class Paper implements Serializable {
     @ElementCollection(targetClass = Collaboration.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "PAPER_COLLABORATION", joinColumns = @JoinColumn(name = "PAPER_ID"))
     @Column(name = "COLLABORATION_ID", nullable = false)
-    @Type(type = "collaboration")
+    @Enumerated(EnumType.STRING)
+    // @Type(type = "collaboration")
     public Set<Collaboration> getCollaborations() {
         return collaborations;
     }
