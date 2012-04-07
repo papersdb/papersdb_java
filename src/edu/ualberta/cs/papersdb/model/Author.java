@@ -78,12 +78,12 @@ public class Author implements Serializable {
     @JoinTable(name = "AUTHOR_PAPER",
         joinColumns = { @JoinColumn(name = "AUTHOR_ID", nullable = false, updatable = false) },
         inverseJoinColumns = { @JoinColumn(name = "PAPER_ID", nullable = false, updatable = false) })
-    public Set<Paper> getPubEntries() {
+    public Set<Paper> getPapers() {
         return papers;
     }
 
-    public void setPapers(Set<Paper> pubEntries) {
-        this.papers = pubEntries;
+    public void setPapers(Set<Paper> papers) {
+        this.papers = papers;
     }
 
 }

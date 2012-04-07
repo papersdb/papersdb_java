@@ -22,7 +22,7 @@ public class PersistenceHibernateConfig {
     // @Value("${jdbc.driverClassName}")
     private String driverClassName = "com.mysql.jdbc.Driver";
 
-    @Value("${jdbc.url}")
+    // @Value("${jdbc.url}")
     private String url = "jdbc:mysql://localhost:3306/papersdb";
 
     // @Value("${hibernate.dialect}")
@@ -39,8 +39,8 @@ public class PersistenceHibernateConfig {
         final LocalSessionFactoryBean sessionFactory =
             new LocalSessionFactoryBean();
         sessionFactory.setDataSource(this.restDataSource());
-        sessionFactory
-            .setPackagesToScan(new String[] { "edu.ualberta.cs.papersdb.model" });
+        sessionFactory.setPackagesToScan(
+            new String[] { "edu.ualberta.cs.papersdb.model" });
         sessionFactory.setHibernateProperties(this.hibernateProperties());
 
         return sessionFactory;

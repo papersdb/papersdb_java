@@ -33,7 +33,7 @@ public class WorkshopPub extends Publication {
         return bookPublisher;
     }
 
-    public void setBookPpublisher(Publisher bookPpublisher) {
+    public void setBookPublisher(Publisher bookPpublisher) {
         this.bookPublisher = bookPpublisher;
     }
 
