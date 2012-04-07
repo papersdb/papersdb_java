@@ -37,6 +37,10 @@ public class Publisher implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Column(name = "RANKING_ID")
     @Enumerated(EnumType.STRING)
     // @Type(type = "ranking")
