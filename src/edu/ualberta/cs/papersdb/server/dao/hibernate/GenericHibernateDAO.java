@@ -53,8 +53,11 @@ public class GenericHibernateDAO<T, ID extends Serializable>
     public Set<T> findByExample(T exampleInstance, String[] excludeProperty) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         Example example = Example.create(exampleInstance);
-        for (String exclude : excludeProperty) {
-            example.excludeProperty(exclude);
+
+        if (excludeProperty != null) {
+            for (String exclude : excludeProperty) {
+                example.excludeProperty(exclude);
+            }
         }
         crit.add(example);
         return new HashSet<T>(crit.list());

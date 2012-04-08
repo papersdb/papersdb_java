@@ -17,9 +17,9 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@ImportResource("classpath:/test/edu/ualberta/cs/papersdb/server/dao/hibernate/Test-context.xml")
+@ImportResource("classpath:/test/edu/ualberta/cs/papersdb/server/dao/hibernate/test-config.xml")
 @EnableTransactionManagement
-public class PersistenceHibernateConfig {
+public class TestContextLoader {
 
     @Value("${jdbc.driverClassName}")
     private String driverClassName;
@@ -85,13 +85,13 @@ public class PersistenceHibernateConfig {
             private static final long serialVersionUID = 1L;
             {
                 this.put("persistence.dialect",
-                    PersistenceHibernateConfig.this.hibernateDialect);
+                    TestContextLoader.this.hibernateDialect);
                 // this.put("hibernate.hbm2ddl.auto",
                 // PersistenceHibernateConfig.this.hibernateHbm2ddlAuto);
                 this.put("hibernate.dialect",
-                    PersistenceHibernateConfig.this.hibernateDialect);
+                    TestContextLoader.this.hibernateDialect);
                 this.put("hibernate.show_sql",
-                    PersistenceHibernateConfig.this.hibernateShowSql);
+                    TestContextLoader.this.hibernateShowSql);
             }
         };
     }

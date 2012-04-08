@@ -39,6 +39,7 @@ public class Paper implements Serializable {
     private Date date;
     private String submittedBy;
     private String userTags;
+    private Ranking ranking;
     private String customRanking;
     private String doi;
     private Set<Collaboration> collaborations;
@@ -114,6 +115,16 @@ public class Paper implements Serializable {
 
     public void setUserTags(String userTags) {
         this.userTags = userTags;
+    }
+
+    @Column(name = "RANKING_ID")
+    @Enumerated(EnumType.STRING)
+    public Ranking getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(Ranking ranking) {
+        this.ranking = ranking;
     }
 
     @Column(name = "CUSTOM_RANKING", length = 255)

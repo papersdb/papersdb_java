@@ -8,7 +8,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { PersistenceHibernateConfig.class })
+@ContextConfiguration(classes = { TestContextLoader.class })
 @TransactionConfiguration
 @Transactional
 public class TestSimple {
