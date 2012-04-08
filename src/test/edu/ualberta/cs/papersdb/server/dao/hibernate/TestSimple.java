@@ -1,4 +1,4 @@
-package test.edu.ualberta.ca.papersdb.server.dao.hibernate;
+package test.edu.ualberta.cs.papersdb.server.dao.hibernate;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
