@@ -9,13 +9,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.server.dao.PaperDAO;
 
 @Repository
+@Transactional
 public class PaperDAOHibernateImpl
     extends GenericHibernateDAO<Paper, Long>
     implements PaperDAO {
@@ -25,7 +26,6 @@ public class PaperDAOHibernateImpl
 
     private SessionFactory sessionFactory;
 
-    @Autowired
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
         this.session = sessionFactory.getCurrentSession();

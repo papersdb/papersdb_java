@@ -8,14 +8,13 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { TestContextLoader.class })
+@ContextConfiguration(classes = { StandaloneDataConfig.class, DAOConfig.class })
 @TransactionConfiguration
 @Transactional
 public class TestSimple {
 
     @Test
     public void testCreate() {
-
         assert (true);
     }
 }

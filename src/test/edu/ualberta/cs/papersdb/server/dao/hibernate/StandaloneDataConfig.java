@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -19,7 +20,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @ImportResource("classpath:/test/edu/ualberta/cs/papersdb/server/dao/hibernate/test-config.xml")
 @EnableTransactionManagement
-public class TestContextLoader {
+@Profile("dev")
+public class StandaloneDataConfig {
 
     @Value("${jdbc.driverClassName}")
     private String driverClassName;
@@ -28,19 +30,19 @@ public class TestContextLoader {
     private String url;
 
     @Value("${hibernate.dialect}")
-    String hibernateDialect;
+    private String hibernateDialect;
 
     @Value("${hibernate.show_sql}")
-    boolean hibernateShowSql;
+    private boolean hibernateShowSql;
 
     // @Value("${hibernate.hbm2ddl.auto}")
-    // String hibernateHbm2ddlAuto;
+    // private String hibernateHbm2ddlAuto;
 
     @Bean
-    public LocalSessionFactoryBean alertsSessionFactoryBean() {
+    public LocalSessionFactoryBean localSessionFactory() {
         final LocalSessionFactoryBean sessionFactory =
             new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(this.restDataSource());
+        sessionFactory.setDataSource(this.dataSource());
         sessionFactory.setPackagesToScan(
             new String[] { "edu.ualberta.cs.papersdb.model" });
         sessionFactory.setHibernateProperties(this.hibernateProperties());
@@ -49,7 +51,7 @@ public class TestContextLoader {
     }
 
     @Bean
-    public DataSource restDataSource() {
+    public DataSource dataSource() {
         final DriverManagerDataSource dataSource =
             new DriverManagerDataSource();
         dataSource.setDriverClassName(this.driverClassName);
@@ -64,8 +66,7 @@ public class TestContextLoader {
     public HibernateTransactionManager transactionManager() {
         final HibernateTransactionManager txManager =
             new HibernateTransactionManager();
-        txManager
-            .setSessionFactory(this.alertsSessionFactoryBean().getObject());
+        txManager.setSessionFactory(localSessionFactory().getObject());
 
         return txManager;
     }
@@ -85,14 +86,15 @@ public class TestContextLoader {
             private static final long serialVersionUID = 1L;
             {
                 this.put("persistence.dialect",
-                    TestContextLoader.this.hibernateDialect);
+                    StandaloneDataConfig.this.hibernateDialect);
                 // this.put("hibernate.hbm2ddl.auto",
                 // PersistenceHibernateConfig.this.hibernateHbm2ddlAuto);
                 this.put("hibernate.dialect",
-                    TestContextLoader.this.hibernateDialect);
+                    StandaloneDataConfig.this.hibernateDialect);
                 this.put("hibernate.show_sql",
-                    TestContextLoader.this.hibernateShowSql);
+                    StandaloneDataConfig.this.hibernateShowSql);
             }
         };
     }
+
 }
