@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.server.dao.PaperDAO;
 
-@Repository
 @Transactional
+@Repository
 public class PaperDAOHibernateImpl
     extends GenericHibernateDAO<Paper, Long>
     implements PaperDAO {
