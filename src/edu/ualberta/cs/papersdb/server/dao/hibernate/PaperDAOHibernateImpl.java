@@ -24,11 +24,11 @@ public class PaperDAOHibernateImpl
     // private static final Logger LOG = Logger
     // .getLogger(PaperDAOHibernateImpl.class);
 
-    private SessionFactory sessionFactory;
+    // private SessionFactory sessionFactory;
 
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.session = sessionFactory.getCurrentSession();
+        // this.sessionFactory = sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class PaperDAOHibernateImpl
     @SuppressWarnings("unchecked")
     public Set<Paper> getPapersMatching(String match, int start, int max,
         MatchMode matchMode) {
-        Criteria crit = session.createCriteria(Paper.class);
+        Criteria crit = getSession().createCriteria(Paper.class);
         crit.add(Restrictions.ilike("title", match, matchMode));
         crit.addOrder(Order.asc("title"));
         crit.setFirstResult(start);
@@ -67,7 +67,7 @@ public class PaperDAOHibernateImpl
     @SuppressWarnings("unchecked")
     @Override
     public Set<Paper> getPapersForAuthor(long authorId, int start, int max) {
-        Criteria crit = session.createCriteria(Paper.class);
+        Criteria crit = getSession().createCriteria(Paper.class);
         crit.createAlias("authors", "a");
         crit.add(Restrictions.eq("a.id", authorId));
         return new HashSet<Paper>(crit.list());

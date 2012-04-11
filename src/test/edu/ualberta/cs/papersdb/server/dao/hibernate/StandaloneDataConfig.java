@@ -4,16 +4,18 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.dao.support.PersistenceExceptionTranslator;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate4.HibernateExceptionTranslator;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 
 @Configuration
 @PropertySource("classpath:/test/edu/ualberta/cs/papersdb/server/dao/hibernate/jdbc.properties")
@@ -23,12 +25,23 @@ public class StandaloneDataConfig {
     @Autowired
     Environment env;
 
+    // @Bean
+    // public SessionFactory sessionFactory() {
+    // final LocalSessionFactoryBuilder sessionFactory =
+    // new LocalSessionFactoryBuilder(this.dataSource());
+    // sessionFactory.scanPackages("edu.ualberta.cs.papersdb.model");
+    // return sessionFactory.buildSessionFactory();
+    // }
+
     @Bean
-    public SessionFactory sessionFactory() {
-        final LocalSessionFactoryBuilder sessionFactory =
-            new LocalSessionFactoryBuilder(this.dataSource());
-        sessionFactory.scanPackages("edu.ualberta.cs.papersdb.model");
-        return sessionFactory.buildSessionFactory();
+    public LocalSessionFactoryBean localSessionFactory() {
+        final LocalSessionFactoryBean sessionFactory =
+            new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(this.dataSource());
+        sessionFactory.setPackagesToScan("edu.ualberta.cs.papersdb.model");
+        sessionFactory.setHibernateProperties(this.hibernateProperties());
+
+        return sessionFactory;
     }
 
     @Bean
@@ -48,21 +61,21 @@ public class StandaloneDataConfig {
     public HibernateTransactionManager transactionManager() {
         final HibernateTransactionManager txManager =
             new HibernateTransactionManager();
-        txManager.setSessionFactory(sessionFactory());
+        txManager.setSessionFactory(localSessionFactory().getObject());
 
         return txManager;
     }
 
-    // @Bean
-    // public PersistenceExceptionTranslationPostProcessor
-    // exceptionTranslationPostProcessor() {
-    // return new PersistenceExceptionTranslationPostProcessor();
-    // }
-    //
-    // @Bean
-    // public PersistenceExceptionTranslator exceptionTranslator() {
-    // return new HibernateExceptionTranslator();
-    // }
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor
+        exceptionTranslationPostProcessor() {
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    @Bean
+    public PersistenceExceptionTranslator exceptionTranslator() {
+        return new HibernateExceptionTranslator();
+    }
 
     final Properties hibernateProperties() {
         return new Properties() {

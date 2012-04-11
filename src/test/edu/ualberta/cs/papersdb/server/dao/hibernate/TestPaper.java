@@ -34,6 +34,8 @@ public class TestPaper extends AbstractTransactionalJUnit4SpringContextTests {
         Paper paper = new Paper();
         paper.setTitle("Title 1");
         paperDAO.save(paper);
+
+        paperDAO.getPaperForTitle("Title 1");
     }
 
 }

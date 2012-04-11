@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
 
@@ -17,7 +18,7 @@ public class GenericHibernateDAO<T, ID extends Serializable>
     implements GenericDAO<T, ID> {
 
     private Class<T> persistentClass;
-    protected Session session;
+    protected SessionFactory sessionFactory;
 
     @SuppressWarnings("unchecked")
     public GenericHibernateDAO() {
@@ -25,15 +26,15 @@ public class GenericHibernateDAO<T, ID extends Serializable>
             .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    public void setSession(Session s) {
-        this.session = s;
+    public void setSession(SessionFactory sf) {
+        this.sessionFactory = sf;
     }
 
     protected Session getSession() {
-        if (session == null)
+        if (sessionFactory == null)
             throw new IllegalStateException(
                 "Session has not been set on DAO before usage");
-        return session;
+        return sessionFactory.getCurrentSession();
     }
 
     public Class<T> getPersistentClass() {
