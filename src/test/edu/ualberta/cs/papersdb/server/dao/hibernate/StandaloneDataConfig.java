@@ -75,8 +75,11 @@ public class StandaloneDataConfig {
             {
                 put("persistence.dialect", env.getProperty("hibernate.dialect"));
                 put("hibernate.dialect", env.getProperty("hibernate.dialect"));
-                put("hibernate.show_sql",
-                    new Boolean(env.getProperty("hibernate.show_sql")));
+
+                if (env.getProperty("hibernate.show_sql") != null) {
+                    put("hibernate.show_sql",
+                        new Boolean(env.getProperty("hibernate.show_sql")));
+                }
 
                 if (env.getProperty("hibernate.hbm2ddl.auto") != null) {
                     put("hibernate.hbm2ddl.auto",
