@@ -73,14 +73,15 @@ public class StandaloneDataConfig {
         return new Properties() {
             private static final long serialVersionUID = 1L;
             {
-                this.put("persistence.dialect",
-                    env.getProperty("hibernate.dialect"));
-                // this.put("hibernate.hbm2ddl.auto",
-                // PersistenceHibernateConfig.this.hibernateHbm2ddlAuto);
-                this.put("hibernate.dialect",
-                    env.getProperty("hibernate.dialect"));
-                this.put("hibernate.show_sql",
+                put("persistence.dialect", env.getProperty("hibernate.dialect"));
+                put("hibernate.dialect", env.getProperty("hibernate.dialect"));
+                put("hibernate.show_sql",
                     new Boolean(env.getProperty("hibernate.show_sql")));
+
+                if (env.getProperty("hibernate.hbm2ddl.auto") != null) {
+                    put("hibernate.hbm2ddl.auto",
+                        env.getProperty("hibernate.hbm2ddl.auto"));
+                }
             }
         };
     }
