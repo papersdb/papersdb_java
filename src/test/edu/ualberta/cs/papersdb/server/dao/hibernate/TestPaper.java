@@ -22,12 +22,12 @@ import edu.ualberta.cs.papersdb.server.dao.PaperDAO;
 @Transactional
 public class TestPaper extends AbstractTransactionalJUnit4SpringContextTests {
 
-    @Autowired
     private PaperDAO paperDAO;
 
-    // public void setPaperDAO(PaperDAO paperDAO) {
-    // this.paperDAO = paperDAO;
-    // }
+    @Autowired
+    public void setPaperDAO(PaperDAO paperDAO) {
+        this.paperDAO = paperDAO;
+    }
 
     @Test
     public void testCreate() {

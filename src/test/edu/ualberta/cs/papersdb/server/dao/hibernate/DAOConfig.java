@@ -11,8 +11,12 @@ import edu.ualberta.cs.papersdb.server.dao.hibernate.PaperDAOHibernateImpl;
 @Configuration
 public class DAOConfig {
 
-    @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Bean
     public PaperDAO paperDAO() {

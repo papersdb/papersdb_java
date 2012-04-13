@@ -18,20 +18,12 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 
 @Configuration
-@PropertySource("classpath:/test/edu/ualberta/cs/papersdb/server/dao/hibernate/jdbc.properties")
+@PropertySource("classpath:jdbc.properties")
 @Profile("dev")
 public class StandaloneDataConfig {
 
     @Autowired
     Environment env;
-
-    // @Bean
-    // public SessionFactory sessionFactory() {
-    // final LocalSessionFactoryBuilder sessionFactory =
-    // new LocalSessionFactoryBuilder(this.dataSource());
-    // sessionFactory.scanPackages("edu.ualberta.cs.papersdb.model");
-    // return sessionFactory.buildSessionFactory();
-    // }
 
     @Bean
     public LocalSessionFactoryBean localSessionFactory() {
