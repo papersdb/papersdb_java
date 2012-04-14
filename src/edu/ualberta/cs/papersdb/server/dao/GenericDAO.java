@@ -9,7 +9,7 @@ public interface GenericDAO<T, ID extends Serializable> {
 
     Set<T> findAll();
 
-    Set<T> findByExample(T exampleInstance, String[] excludeProperty);
+    Set<T> findByExample(T exampleInstance, String... excludeProperties);
 
     T save(T entity);
 

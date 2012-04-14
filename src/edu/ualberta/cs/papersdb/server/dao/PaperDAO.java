@@ -14,4 +14,6 @@ public interface PaperDAO extends GenericDAO<Paper, Long> {
 
     String getCitation();
 
+    Paper getPaperForDoi(String doi);
+
 }

@@ -61,19 +61,19 @@ public class GenericHibernateDAO<T, ID extends Serializable>
     }
 
     @SuppressWarnings("unchecked")
-    public Set<T> findByExample(T exampleInstance, String[] excludeProperty) {
+    public Set<T> findByExample(T exampleInstance, String... excludeProperties) {
         if (log.isTraceEnabled())
             log.trace("findByExample: {}", persistentClass);
-        Criteria crit = getSession().createCriteria(getPersistentClass());
+        Criteria criteria = getSession().createCriteria(getPersistentClass());
         Example example = Example.create(exampleInstance);
 
-        if (excludeProperty != null) {
-            for (String exclude : excludeProperty) {
+        if (excludeProperties != null) {
+            for (String exclude : excludeProperties) {
                 example.excludeProperty(exclude);
             }
         }
-        crit.add(example);
-        return new HashSet<T>(crit.list());
+        criteria.add(example);
+        return new HashSet<T>(criteria.list());
     }
 
     public T save(T entity) {

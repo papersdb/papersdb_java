@@ -2,6 +2,7 @@ package edu.ualberta.cs.papersdb.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -37,18 +38,18 @@ public class Paper implements Serializable {
     private String pubAbstract;
     private String keywords;
     private Date date;
-    private String submittedBy;
+    private User submittedBy;
     private String userTags;
     private Ranking ranking;
     private String customRanking;
     private String doi;
-    private Set<Collaboration> collaborations;
+    private Set<Collaboration> collaborations = new HashSet<Collaboration>(0);
     private boolean isPublic = false;
-    private Set<Author> authors;
+    private Set<Author> authors = new HashSet<Author>(0);
     private Publication publication;
-    private Set<Paper> relatedPapers;
-    private Set<String> relatedUrls;
-    private Set<String> attachments;
+    private Set<Paper> relatedPapers = new HashSet<Paper>(0);
+    private Set<String> relatedUrls = new HashSet<String>(0);
+    private Set<String> attachments = new HashSet<String>(0);
 
     @Id
     @GeneratedValue(generator = "increment")
@@ -99,12 +100,12 @@ public class Paper implements Serializable {
         this.date = date;
     }
 
-    @Column(name = "SUBMITTED_BY", length = 255)
-    public String getSubmittedBy() {
+    @Column(name = "SUBMITTED_BY_USER_ID", length = 255)
+    public User getSubmittedBy() {
         return submittedBy;
     }
 
-    public void setSubmittedBy(String submittedBy) {
+    public void setSubmittedBy(User submittedBy) {
         this.submittedBy = submittedBy;
     }
 
