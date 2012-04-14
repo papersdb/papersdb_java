@@ -6,14 +6,14 @@ import edu.ualberta.cs.papersdb.model.Paper;
 
 public interface PaperDAO extends GenericDAO<Paper, Long> {
 
-    Paper getPaperForTitle(String title);
+    Paper getByTitle(String title);
 
     Set<Paper> getPapersMatching(String match, int start, int max);
 
-    Set<Paper> getPapersForAuthor(long authorId, int start, int max);
+    Set<Paper> getForAuthor(long authorId, int start, int max);
 
     String getCitation();
 
-    Paper getPaperForDoi(String doi);
+    Paper getByDoi(String doi);
 
 }

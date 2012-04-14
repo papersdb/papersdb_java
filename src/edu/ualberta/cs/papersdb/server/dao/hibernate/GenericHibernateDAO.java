@@ -89,10 +89,12 @@ public class GenericHibernateDAO<T, ID extends Serializable>
         getSession().delete(entity);
     }
 
+    @Override
     public void flush() {
         getSession().flush();
     }
 
+    @Override
     public void clear() {
         getSession().clear();
     }

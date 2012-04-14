@@ -30,7 +30,7 @@ public class PaperDAOHibernateImpl
     }
 
     @Override
-    public Paper getPaperForTitle(String title) {
+    public Paper getByTitle(String title) {
         Paper paper = new Paper();
         paper.setTitle(title);
         Set<Paper> result = findByExample(paper, "isPublic");
@@ -47,7 +47,7 @@ public class PaperDAOHibernateImpl
     }
 
     @Override
-    public Paper getPaperForDoi(String doi) {
+    public Paper getByDoi(String doi) {
         Paper paper = new Paper();
         paper.setDoi(doi);
         Set<Paper> result = findByExample(paper, "isPublic");
@@ -81,7 +81,7 @@ public class PaperDAOHibernateImpl
 
     @SuppressWarnings("unchecked")
     @Override
-    public Set<Paper> getPapersForAuthor(long authorId, int start, int max) {
+    public Set<Paper> getForAuthor(long authorId, int start, int max) {
         Criteria crit = getSession().createCriteria(Paper.class);
         crit.createAlias("authors", "a");
         crit.add(Restrictions.eq("a.id", authorId));
