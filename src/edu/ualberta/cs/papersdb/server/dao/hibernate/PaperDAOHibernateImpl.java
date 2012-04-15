@@ -22,7 +22,7 @@ public class PaperDAOHibernateImpl
     extends GenericHibernateDAO<Paper, Long>
     implements PaperDAO {
 
-    private static final Logger LOG = LoggerFactory.getLogger(
+    private static final Logger log = LoggerFactory.getLogger(
         PaperDAOHibernateImpl.class);
 
     public void setSessionFactory(SessionFactory sessionFactory) {
@@ -31,6 +31,8 @@ public class PaperDAOHibernateImpl
 
     @Override
     public Paper getByTitle(String title) {
+        log.trace("getByTitle: {}", title);
+
         Paper paper = new Paper();
         paper.setTitle(title);
         Set<Paper> result = findByExample(paper, "isPublic");
@@ -48,6 +50,8 @@ public class PaperDAOHibernateImpl
 
     @Override
     public Paper getByDoi(String doi) {
+        log.trace("getByDoi: {}", doi);
+
         Paper paper = new Paper();
         paper.setDoi(doi);
         Set<Paper> result = findByExample(paper, "isPublic");
@@ -64,12 +68,12 @@ public class PaperDAOHibernateImpl
     }
 
     @Override
-    public Set<Paper> getPapersMatching(String match, int start, int max) {
-        return getPapersMatching(match, start, max, MatchMode.START);
+    public Set<Paper> getPapersTitleMatching(String match, int start, int max) {
+        return getPapersTitleMatching(match, start, max, MatchMode.START);
     }
 
     @SuppressWarnings("unchecked")
-    public Set<Paper> getPapersMatching(String match, int start, int max,
+    public Set<Paper> getPapersTitleMatching(String match, int start, int max,
         MatchMode matchMode) {
         Criteria crit = getSession().createCriteria(Paper.class);
         crit.add(Restrictions.ilike("title", match, matchMode));

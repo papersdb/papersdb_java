@@ -19,30 +19,20 @@ public class JdbcUtils {
     }
 
     public Paper getPaper(String title) {
-        String sql = "select id,title,ranking_id from paper where title = ?";
+        String sql = "select * from paper where title = ?";
         RowMapper<Paper> mapper = new RowMapper<Paper>() {
             public Paper mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Paper paper = new Paper();
                 paper.setId(rs.getLong("id"));
                 paper.setTitle(rs.getString("title"));
-
-                if (rs.getString("ranking_id").equals(
-                    Ranking.TOP_TIER.toString())) {
-                    paper.setRanking(Ranking.TOP_TIER);
-                } else if (rs.getString("ranking_id").equals(
-                    Ranking.SECOND_TIER.toString())) {
-                    paper.setRanking(Ranking.SECOND_TIER);
-                } else if (rs.getString("ranking_id").equals(
-                    Ranking.REFEREED.toString())) {
-                    paper.setRanking(Ranking.REFEREED);
-                } else if (rs.getString("ranking_id").equals(
-                    Ranking.UNREFEREED.toString())) {
-                    paper.setRanking(Ranking.UNREFEREED);
-                }
+                paper.setRanking(Ranking.valueOf(rs.getString("ranking_id")));
                 return paper;
             }
 
         };
+
+        // return jdbcTemplate.queryForObject(sql, new Object[] { title },
+        // new BeanPropertyRowMapper<Paper>(Paper.class));
         return jdbcTemplate.queryForObject(sql, mapper, title);
     }
 

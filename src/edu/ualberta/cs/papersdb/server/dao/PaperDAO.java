@@ -8,7 +8,7 @@ public interface PaperDAO extends GenericDAO<Paper, Long> {
 
     Paper getByTitle(String title);
 
-    Set<Paper> getPapersMatching(String match, int start, int max);
+    Set<Paper> getPapersTitleMatching(String match, int start, int max);
 
     Set<Paper> getForAuthor(long authorId, int start, int max);
 
