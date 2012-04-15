@@ -18,7 +18,7 @@ public class TestHibernate extends
     @Rule
     public final TestName testName = new TestName();
 
-    protected JdbcUtils jdbcUtils;
+    private JdbcUtils jdbcUtils;
 
     protected String getMethodName() {
         return testName.getMethodName();
@@ -36,6 +36,10 @@ public class TestHibernate extends
     public void setDataSource(DataSource dataSource) {
         this.jdbcUtils = new JdbcUtils();
         this.jdbcUtils.setDataSource(dataSource);
+    }
+
+    public JdbcUtils getJdbcUtils() {
+        return jdbcUtils;
     }
 
 }

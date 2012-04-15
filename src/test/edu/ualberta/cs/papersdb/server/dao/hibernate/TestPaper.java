@@ -60,7 +60,7 @@ public class TestPaper extends TestHibernate {
         paperDAO.flush();
 
         // use JDBC to check the database
-        Paper result = jdbcUtils.getPaper(name);
+        Paper result = getJdbcUtils().getPaper(name);
         Assert.assertEquals(name, result.getTitle());
         Assert.assertEquals(Ranking.TOP_TIER, result.getRanking());
     }
