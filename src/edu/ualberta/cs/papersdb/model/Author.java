@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "AUTHOR")
@@ -47,7 +48,8 @@ public class Author implements Serializable {
         this.title = title;
     }
 
-    @Column(name = "FAMILY_NAMES")
+    @NotEmpty(message = "{edu.ualberta.cs.papersDb.model.Author.familyNames.NotEmpty}")
+    @Column(name = "FAMILY_NAMES", nullable = false)
     public String getFamilyNames() {
         return familyNames;
     }
@@ -56,7 +58,8 @@ public class Author implements Serializable {
         this.familyNames = familyNames;
     }
 
-    @Column(name = "GIVEN_NAMES")
+    @NotEmpty(message = "{edu.ualberta.cs.papersDb.model.Author.givenNames.NotEmpty}")
+    @Column(name = "GIVEN_NAMES", nullable = false)
     public String getGivenNames() {
         return givenNames;
     }

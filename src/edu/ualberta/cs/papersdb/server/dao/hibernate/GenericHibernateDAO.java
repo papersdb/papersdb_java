@@ -48,22 +48,22 @@ public class GenericHibernateDAO<T, ID extends Serializable>
 
     @SuppressWarnings("unchecked")
     public T findById(ID id, boolean lock) {
-        if (log.isTraceEnabled())
-            log.trace("findById: {} id={}", persistentClass.getClass(),
+        if (log.isDebugEnabled())
+            log.debug("findById: {} id={}", persistentClass.getClass(),
                 id);
         return (T) getSession().load(getPersistentClass(), id);
     }
 
     public Set<T> findAll() {
-        if (log.isTraceEnabled())
-            log.trace("findAll: {}", persistentClass.getClass());
+        if (log.isDebugEnabled())
+            log.debug("findAll: {}", persistentClass.getClass());
         return new HashSet<T>(findByCriteria());
     }
 
     @SuppressWarnings("unchecked")
     public Set<T> findByExample(T exampleInstance, String... excludeProperties) {
-        if (log.isTraceEnabled())
-            log.trace("findByExample: {}", persistentClass);
+        if (log.isDebugEnabled())
+            log.debug("findByExample: {}", persistentClass);
         Criteria criteria = getSession().createCriteria(getPersistentClass());
         Example example = Example.create(exampleInstance);
 
@@ -77,22 +77,24 @@ public class GenericHibernateDAO<T, ID extends Serializable>
     }
 
     public T save(T entity) {
-        if (log.isTraceEnabled())
-            log.trace("save: {}", persistentClass);
+        if (log.isDebugEnabled())
+            log.debug("save: {}", persistentClass);
         getSession().saveOrUpdate(entity);
         return entity;
     }
 
     public void delete(T entity) {
-        if (log.isTraceEnabled())
-            log.trace("delete: {}", persistentClass);
+        if (log.isDebugEnabled())
+            log.debug("delete: {}", persistentClass);
         getSession().delete(entity);
     }
 
+    @Override
     public void flush() {
         getSession().flush();
     }
 
+    @Override
     public void clear() {
         getSession().clear();
     }
@@ -102,8 +104,8 @@ public class GenericHibernateDAO<T, ID extends Serializable>
      */
     @SuppressWarnings("unchecked")
     protected List<T> findByCriteria(Criterion... criterion) {
-        if (log.isTraceEnabled())
-            log.trace("findByCriteria: {}", persistentClass);
+        if (log.isDebugEnabled())
+            log.debug("findByCriteria: {}", persistentClass);
         Criteria crit = getSession().createCriteria(getPersistentClass());
         for (Criterion c : criterion) {
             crit.add(c);

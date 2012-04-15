@@ -12,8 +12,6 @@ public interface PaperDAO extends GenericDAO<Paper, Long> {
 
     Set<Paper> getForAuthor(long authorId, int start, int max);
 
-    String getCitation();
-
     Paper getByDoi(String doi);
 
 }

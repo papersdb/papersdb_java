@@ -62,7 +62,7 @@ public class Paper implements Serializable {
         this.id = id;
     }
 
-    @NotEmpty(message = "{edu.ualberta.cs.papersDb.model.PubEntry.title.NotEmpty}")
+    @NotEmpty(message = "{edu.ualberta.cs.papersDb.model.Paper.title.NotEmpty}")
     @Column(name = "TITLE", length = 500, unique = true, nullable = false)
     public String getTitle() {
         return title;
@@ -137,12 +137,15 @@ public class Paper implements Serializable {
         this.customRanking = customRanking;
     }
 
-    @Column(name = "DOI")
-    public String getDoi() {
+    /*
+     * Papers should be allowed to be saved with a null DOI.
+     */
+    @Column(name = "DOI", unique = true)
+    public String getDOI() {
         return doi;
     }
 
-    public void setDoi(String doi) {
+    public void setDOI(String doi) {
         this.doi = doi;
     }
 

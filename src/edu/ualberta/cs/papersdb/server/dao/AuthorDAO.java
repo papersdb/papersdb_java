@@ -8,7 +8,8 @@ public interface AuthorDAO extends GenericDAO<Author, Long> {
 
     Author getByFamilyName(String familyName);
 
-    Set<Author> getAuthorsMatchingFamilyName(String familyName);
+    Set<Author> getMatchingFamilyName(String match, int start,
+        int max);
 
     Author getByEmail(String email);
 
