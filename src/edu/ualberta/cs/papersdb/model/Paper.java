@@ -63,7 +63,7 @@ public class Paper implements Serializable {
     }
 
     @NotEmpty(message = "{edu.ualberta.cs.papersDb.model.PubEntry.title.NotEmpty}")
-    @Column(name = "TITLE", length = 255)
+    @Column(name = "TITLE", length = 500, unique = true, nullable = false)
     public String getTitle() {
         return title;
     }

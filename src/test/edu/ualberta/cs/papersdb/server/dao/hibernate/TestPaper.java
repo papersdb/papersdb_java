@@ -22,6 +22,7 @@ import edu.ualberta.cs.papersdb.model.Collaboration;
 import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.model.Ranking;
 import edu.ualberta.cs.papersdb.server.dao.PaperDAO;
+import edu.ualberta.cs.papersdb.server.dao.hibernate.PaperDAOHibernateImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { StandaloneDataConfig.class, DAOConfig.class })
@@ -57,12 +58,32 @@ public class TestPaper extends TestHibernate {
         paper.setCollaborations(allCollaborations);
         paper.setRanking(Ranking.TOP_TIER);
         paperDAO.save(paper);
-        paperDAO.flush();
+        ((PaperDAOHibernateImpl) paperDAO).flush();
 
         // use JDBC to check the database
         Paper result = getJdbcUtils().getPaper(name);
         Assert.assertEquals(name, result.getTitle());
         Assert.assertEquals(Ranking.TOP_TIER, result.getRanking());
+    }
+
+    @Test
+    public void testSaveDuplicateTitle() {
+        Paper paper = new Paper();
+        paper.setTitle(name);
+        paperDAO.save(paper);
+        ((PaperDAOHibernateImpl) paperDAO).flush();
+
+        // add another paper with same title
+        paper = new Paper();
+        paper.setTitle(name);
+
+        try {
+            paperDAO.save(paper);
+            Assert
+                .fail("no exception when saving new paper with existing title");
+        } catch (Exception e) {
+            Assert.assertTrue(true);
+        }
     }
 
     @Test
@@ -73,6 +94,14 @@ public class TestPaper extends TestHibernate {
 
         Paper result = paperDAO.getByTitle(name);
         Assert.assertEquals(name, result.getTitle());
+
+        try {
+            result =
+                paperDAO.getByTitle(new BigInteger(130, getR()).toString());
+            Assert.fail("no exception when getting paper with title not in db");
+        } catch (IllegalStateException e) {
+            Assert.assertTrue(true);
+        }
     }
 
     @Test

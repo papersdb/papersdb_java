@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import edu.ualberta.cs.papersdb.server.dao.AuthorDAO;
 import edu.ualberta.cs.papersdb.server.dao.PaperDAO;
+import edu.ualberta.cs.papersdb.server.dao.hibernate.AuthorDAOHibernateImpl;
 import edu.ualberta.cs.papersdb.server.dao.hibernate.PaperDAOHibernateImpl;
 
 @Configuration
@@ -21,6 +23,13 @@ public class DAOConfig {
     @Bean
     public PaperDAO paperDAO() {
         PaperDAOHibernateImpl dao = new PaperDAOHibernateImpl();
+        dao.setSessionFactory(sessionFactory);
+        return dao;
+    }
+
+    @Bean
+    public AuthorDAO authorDAO() {
+        AuthorDAOHibernateImpl dao = new AuthorDAOHibernateImpl();
         dao.setSessionFactory(sessionFactory);
         return dao;
     }
