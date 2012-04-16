@@ -5,7 +5,7 @@ import java.util.Set;
 
 public interface GenericDAO<T, ID extends Serializable> {
 
-    T findById(ID id, boolean lock);
+    T findById(ID id);
 
     Set<T> findAll();
 

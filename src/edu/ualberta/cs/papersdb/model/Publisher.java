@@ -32,7 +32,7 @@ public class Publisher implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", unique = true, nullable = false)
     public String getName() {
         return name;
     }

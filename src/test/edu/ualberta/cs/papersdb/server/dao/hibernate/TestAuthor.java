@@ -117,4 +117,25 @@ public class TestAuthor extends TestHibernate {
 
     }
 
+    @Test
+    public void getByEmail() {
+        Author author = new Author();
+        author.setEmail(name);
+        author.setFamilyNames(getMethodNameR());
+        author.setGivenNames(getMethodNameR());
+        authorDAO.save(author);
+
+        Author result = authorDAO.getByEmail(name);
+        Assert.assertEquals(name, result.getEmail());
+
+        try {
+            result =
+                authorDAO.getByEmail(new BigInteger(130, getR()).toString());
+            Assert
+                .fail("no exception when getting author with an email not in db");
+        } catch (IllegalStateException e) {
+            Assert.assertTrue(true);
+        }
+    }
+
 }

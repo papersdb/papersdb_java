@@ -13,4 +13,6 @@ public interface AuthorDAO extends GenericDAO<Author, Long> {
 
     Author getByEmail(String email);
 
+    Set<Author> getPaperAuthors(long paperId);
+
 }

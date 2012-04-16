@@ -36,11 +36,7 @@ public class PaperDAOHibernateImpl
         Paper paper = new Paper();
         paper.setTitle(title);
         Set<Paper> result = findByExample(paper, "isPublic");
-        if (result.size() == 0) {
-            throw new IllegalStateException(MessageFormat
-                .format("no paper with title: \"{0}\"",
-                    title));
-        } else if (result.size() > 1) {
+        if (result.size() > 1) {
             // should never happen because title is a unique key
             throw new IllegalStateException(MessageFormat
                 .format("more than one paper with title: \"{0}\"",

@@ -34,6 +34,7 @@ public class TestHibernate extends
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
+        super.setDataSource(dataSource);
         this.jdbcUtils = new JdbcUtils();
         this.jdbcUtils.setDataSource(dataSource);
     }

@@ -2,6 +2,10 @@ package test.edu.ualberta.cs.papersdb.server.dao.jdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -9,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import edu.ualberta.cs.papersdb.model.Author;
+import edu.ualberta.cs.papersdb.model.Collaboration;
 import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.model.Ranking;
 
@@ -19,22 +24,41 @@ public class JdbcUtils {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    /*
+     * Can also use: jdbcTemplate.queryForObject(sql, new Object[] { title },
+     * new BeanPropertyRowMapper<Paper>(Paper.class));
+     */
     public Paper getPaper(String title) {
-        String sql = "select * from paper where title = ?";
+        String sql = "SELECT * FROM paper WHERE title = ?";
         RowMapper<Paper> mapper = new RowMapper<Paper>() {
             public Paper mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Paper paper = new Paper();
                 paper.setId(rs.getLong("id"));
                 paper.setTitle(rs.getString("title"));
-                paper.setRanking(Ranking.valueOf(rs.getString("ranking_id")));
+                if (rs.getString("ranking_id") != null) {
+                    paper
+                        .setRanking(Ranking.valueOf(rs.getString("ranking_id")));
+                }
                 return paper;
             }
-
         };
 
-        // return jdbcTemplate.queryForObject(sql, new Object[] { title },
-        // new BeanPropertyRowMapper<Paper>(Paper.class));
-        return jdbcTemplate.queryForObject(sql, mapper, title);
+        Paper paper = getJdbcTemplate().queryForObject(sql, mapper, title);
+        Set<Collaboration> collaborations = new HashSet<Collaboration>(0);
+
+        sql =
+            "SELECT collaboration_id FROM paper_collaboration WHERE paper_id = ?";
+
+        List<Map<String, Object>> rows =
+            getJdbcTemplate().queryForList(sql, paper.getId());
+        for (Map<String, Object> row : rows) {
+            collaborations.add(Collaboration.valueOf((String) row
+                .get("collaboration_id")));
+        }
+
+        paper.getCollaborations().addAll(collaborations);
+
+        return paper;
     }
 
     public Author getAuthor(String names) {
@@ -52,7 +76,11 @@ public class JdbcUtils {
 
         };
 
-        return jdbcTemplate.queryForObject(sql, mapper, names);
+        return getJdbcTemplate().queryForObject(sql, mapper, names);
+    }
+
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
     }
 
 }

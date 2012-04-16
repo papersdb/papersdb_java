@@ -35,11 +35,7 @@ public class AuthorDAOHibernateImpl
         Author author = new Author();
         author.setFamilyNames(familyName);
         Set<Author> result = findByExample(author);
-        if (result.size() == 0) {
-            throw new IllegalStateException(MessageFormat
-                .format("no author with family name: \"{0}\"",
-                    familyName));
-        } else if (result.size() > 1) {
+        if (result.size() > 1) {
             throw new IllegalStateException(MessageFormat
                 .format("more than one author with family name: \"{0}\"",
                     familyName));
@@ -77,6 +73,16 @@ public class AuthorDAOHibernateImpl
                 .format("more than one author with email: \"{0}\"", email));
         }
         return result.iterator().next();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Set<Author> getPaperAuthors(long paperId) {
+        log.debug("getPaperAuthors: paperId={}", paperId);
+
+        Criteria crit = getSession().createCriteria(Author.class);
+        crit.createCriteria("papers").add(Restrictions.eq("id", paperId));
+        return new HashSet<Author>(crit.list());
     }
 
 }

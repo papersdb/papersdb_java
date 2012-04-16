@@ -47,7 +47,7 @@ public class GenericHibernateDAO<T, ID extends Serializable>
     }
 
     @SuppressWarnings("unchecked")
-    public T findById(ID id, boolean lock) {
+    public T findById(ID id) {
         if (log.isDebugEnabled())
             log.debug("findById: {} id={}", persistentClass.getClass(),
                 id);
@@ -91,11 +91,13 @@ public class GenericHibernateDAO<T, ID extends Serializable>
 
     @Override
     public void flush() {
+        log.debug("flush");
         getSession().flush();
     }
 
     @Override
     public void clear() {
+        log.debug("clear");
         getSession().clear();
     }
 

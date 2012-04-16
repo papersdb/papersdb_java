@@ -180,4 +180,24 @@ public class TestPaper extends TestHibernate {
             Assert.assertTrue(true);
         }
     }
+
+    // TODO: test update
+
+    @Test
+    public void saveDelete() {
+        Paper paper = new Paper();
+        paper.setTitle(name);
+        paperDAO.save(paper);
+        paperDAO.flush();
+
+        // use JDBC to check the database
+        Paper result = getJdbcUtils().getPaper(name);
+        Assert.assertNotNull(result);
+
+        paper = paperDAO.findById(result.getId());
+        paperDAO.delete(paper);
+        paperDAO.flush();
+
+        Assert.assertEquals(0, countRowsInTable("paper"));
+    }
 }
