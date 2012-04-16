@@ -181,10 +181,30 @@ public class TestPaper extends TestHibernate {
         }
     }
 
-    // TODO: test update
+    @Test
+    public void update() {
+        Paper paper = new Paper();
+        paper.setTitle(name);
+        paperDAO.save(paper);
+        paperDAO.flush();
+
+        // use JDBC to check the database
+        Paper result = getJdbcUtils().getPaper(name);
+        Assert.assertNotNull(result);
+
+        String newTitle = getMethodNameR();
+        paper = paperDAO.findById(result.getId());
+        paper.setTitle(newTitle);
+        paperDAO.save(paper);
+        paperDAO.flush();
+
+        // use JDBC to check the database
+        result = getJdbcUtils().getPaper(newTitle);
+        Assert.assertNotNull(result);
+    }
 
     @Test
-    public void saveDelete() {
+    public void delete() {
         Paper paper = new Paper();
         paper.setTitle(name);
         paperDAO.save(paper);
