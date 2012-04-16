@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,6 @@ import edu.ualberta.cs.papersdb.server.dao.AuthorDAO;
 @ContextConfiguration(classes = { StandaloneDataConfig.class, DAOConfig.class })
 @ActiveProfiles("dev")
 @TransactionConfiguration
-@TestExecutionListeners({})
 @Transactional
 public class TestAuthor extends TestHibernate {
 

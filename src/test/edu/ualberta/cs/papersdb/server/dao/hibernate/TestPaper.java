@@ -18,11 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.ualberta.cs.papersdb.model.Author;
 import edu.ualberta.cs.papersdb.model.Collaboration;
 import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.model.Ranking;
@@ -32,7 +32,6 @@ import edu.ualberta.cs.papersdb.server.dao.PaperDAO;
 @ContextConfiguration(classes = { StandaloneDataConfig.class, DAOConfig.class })
 @ActiveProfiles("dev")
 @TransactionConfiguration
-@TestExecutionListeners({})
 @Transactional
 public class TestPaper extends TestHibernate {
 
@@ -219,5 +218,26 @@ public class TestPaper extends TestHibernate {
         paperDAO.flush();
 
         Assert.assertEquals(0, countRowsInTable("paper"));
+    }
+
+    @Test
+    public void addAuthors() {
+        Paper paper = new Paper();
+        paper.setTitle(name);
+
+        Set<Author> authors = new HashSet<Author>();
+        int numAuthors = getR().nextInt(6) + 1;
+        for (int i = 0; i < numAuthors; ++i) {
+            Author author = new Author();
+            author.setFamilyNames(name);
+            author.setGivenNames(getMethodNameR());
+            authors.add(author);
+        }
+        paper.getAuthors().addAll(authors);
+        paperDAO.save(paper);
+        paperDAO.flush();
+
+        Assert.assertEquals(numAuthors, countRowsInTable("author"));
+
     }
 }
