@@ -11,6 +11,9 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import edu.ualberta.cs.papersdb.model.Author;
 import edu.ualberta.cs.papersdb.model.Collaboration;
@@ -18,10 +21,16 @@ import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.model.Ranking;
 
 public class JdbcUtils {
+
     private JdbcTemplate jdbcTemplate;
+
+    private SimpleJdbcInsert insertAuthor;
 
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.insertAuthor =
+            new SimpleJdbcInsert(dataSource).withTableName("author")
+                .usingGeneratedKeyColumns("id");
     }
 
     /*
@@ -77,6 +86,16 @@ public class JdbcUtils {
         };
 
         return getJdbcTemplate().queryForObject(sql, mapper, names);
+    }
+
+    public void addAuthor(Author author) {
+        // Map<String, Object> parameters = new HashMap<String, Object>(2);
+        // parameters.put("family_names", author.getFamilyNames());
+        // parameters.put("given_names", author.getGivenNames());
+        SqlParameterSource parameters =
+            new BeanPropertySqlParameterSource(author);
+        Number newId = insertAuthor.executeAndReturnKey(parameters);
+        author.setId(newId.longValue());
     }
 
     public JdbcTemplate getJdbcTemplate() {

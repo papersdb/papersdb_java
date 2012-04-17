@@ -41,6 +41,8 @@ public class PaperDAOHibernateImpl
             throw new IllegalStateException(MessageFormat
                 .format("more than one paper with title: \"{0}\"",
                     title));
+        } else if (result.size() == 0) {
+            return null;
         }
         return result.iterator().next();
     }

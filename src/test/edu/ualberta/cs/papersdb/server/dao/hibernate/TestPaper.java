@@ -73,10 +73,9 @@ public class TestPaper extends TestHibernate {
 
         // attempt to save with no title
         paper = new Paper();
-        paperDAO.save(paper);
 
         try {
-            paperDAO.flush();
+            paperDAO.save(paper);
             Assert.fail("no exception when saving without a title");
         } catch (ConstraintViolationException e) {
             log.error(e.getMessage());
@@ -94,10 +93,9 @@ public class TestPaper extends TestHibernate {
         // add another paper with same title
         paper = new Paper();
         paper.setTitle(name);
-        paperDAO.save(paper);
 
         try {
-            paperDAO.flush();
+            paperDAO.save(paper);
             Assert
                 .fail("no exception when saving new paper with existing title");
         } catch (DataIntegrityViolationException e) {
@@ -111,17 +109,13 @@ public class TestPaper extends TestHibernate {
         Paper paper = new Paper();
         paper.setTitle(name);
         paperDAO.save(paper);
+        paperDAO.flush();
 
         Paper result = paperDAO.getByTitle(name);
         Assert.assertEquals(name, result.getTitle());
 
-        try {
-            result =
-                paperDAO.getByTitle(new BigInteger(130, getR()).toString());
-            Assert.fail("no exception when getting paper with title not in db");
-        } catch (IllegalStateException e) {
-            Assert.assertTrue(true);
-        }
+        result = paperDAO.getByTitle(new BigInteger(130, getR()).toString());
+        Assert.assertNull(result);
     }
 
     @Test
@@ -168,10 +162,9 @@ public class TestPaper extends TestHibernate {
         paper = new Paper();
         paper.setTitle(getMethodNameR());
         paper.setDOI(name);
-        paperDAO.save(paper);
 
         try {
-            paperDAO.flush();
+            paperDAO.save(paper);
             Assert
                 .fail("no exception when saving new paper with existing DOI");
         } catch (DataIntegrityViolationException e) {
@@ -231,6 +224,7 @@ public class TestPaper extends TestHibernate {
             Author author = new Author();
             author.setFamilyNames(name);
             author.setGivenNames(getMethodNameR());
+            getJdbcUtils().addAuthor(author);
             authors.add(author);
         }
         paper.getAuthors().addAll(authors);
