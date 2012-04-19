@@ -214,7 +214,7 @@ public class TestPaper extends TestHibernate {
     }
 
     @Test
-    public void addAuthors() {
+    public void addRemoveAuthors() {
         Paper paper = new Paper();
         paper.setTitle(name);
 
@@ -228,10 +228,21 @@ public class TestPaper extends TestHibernate {
             authors.add(author);
         }
         paper.getAuthors().addAll(authors);
-        paperDAO.save(paper);
+        paper = paperDAO.save(paper);
         paperDAO.flush();
 
         Assert.assertEquals(numAuthors, countRowsInTable("author"));
+
+        Author author;
+
+        for (int i = 0; i < numAuthors; ++i) {
+            author = authors.iterator().next();
+            authors.remove(author);
+            paper.getAuthors().remove(author);
+            paper = paperDAO.save(paper);
+
+            Assert.assertEquals(authors.size(), paper.getAuthors().size());
+        }
 
     }
 }

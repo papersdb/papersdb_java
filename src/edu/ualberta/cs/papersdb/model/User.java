@@ -1,14 +1,19 @@
 package edu.ualberta.cs.papersdb.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
@@ -24,6 +29,7 @@ public class User implements Serializable {
     String givenNames;
     String login;
     String password;
+    private Set<Paper> papers = new HashSet<Paper>(0);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -97,6 +103,16 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userSubmittedBy")
+    @Cascade({ org.hibernate.annotations.CascadeType.SAVE_UPDATE })
+    public Set<Paper> getPapers() {
+        return this.papers;
+    }
+
+    public void setPapers(Set<Paper> papers) {
+        this.papers = papers;
     }
 
 }

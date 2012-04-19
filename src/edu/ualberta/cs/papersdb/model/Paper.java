@@ -19,10 +19,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Null;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -38,7 +40,7 @@ public class Paper implements Serializable {
     private String pubAbstract;
     private String keywords;
     private Date date;
-    private User submittedBy;
+    private User userSubmittedBy;
     private String userTags;
     private Ranking ranking;
     private String customRanking;
@@ -99,13 +101,15 @@ public class Paper implements Serializable {
         this.date = date;
     }
 
-    @Column(name = "SUBMITTED_BY_USER_ID", length = 255)
-    public User getSubmittedBy() {
-        return submittedBy;
+    @Null(message = "{edu.ualberta.cs.papersdb.model.Paper.userSubmittedBy.NotNull}")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SUBMITTED_BY_USER_ID")
+    public User getUserSubmittedBy() {
+        return userSubmittedBy;
     }
 
-    public void setSubmittedBy(User submittedBy) {
-        this.submittedBy = submittedBy;
+    public void setUserSubmittedBy(User user) {
+        this.userSubmittedBy = user;
     }
 
     @Column(name = "USER_TAGS", length = 255)

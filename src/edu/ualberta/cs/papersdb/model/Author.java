@@ -1,6 +1,7 @@
 package edu.ualberta.cs.papersdb.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -26,7 +27,7 @@ public class Author implements Serializable {
     private String familyNames;
     private String givenNames;
     private String email;
-    private Set<Paper> papers;
+    private Set<Paper> papers = new HashSet<Paper>(0);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

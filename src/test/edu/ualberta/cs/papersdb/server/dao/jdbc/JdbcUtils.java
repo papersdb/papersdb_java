@@ -18,7 +18,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import edu.ualberta.cs.papersdb.model.Author;
 import edu.ualberta.cs.papersdb.model.Collaboration;
 import edu.ualberta.cs.papersdb.model.Paper;
+import edu.ualberta.cs.papersdb.model.Publisher;
 import edu.ualberta.cs.papersdb.model.Ranking;
+import edu.ualberta.cs.papersdb.model.publication.Publication;
 
 public class JdbcUtils {
 
@@ -26,11 +28,27 @@ public class JdbcUtils {
 
     private SimpleJdbcInsert insertAuthor;
 
+    private SimpleJdbcInsert insertPublication;
+
+    private SimpleJdbcInsert insertPublisher;
+
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.insertAuthor =
             new SimpleJdbcInsert(dataSource).withTableName("author")
                 .usingGeneratedKeyColumns("id");
+
+        this.insertPublisher =
+            new SimpleJdbcInsert(dataSource).withTableName("publisher")
+                .usingGeneratedKeyColumns("id");
+
+        this.insertPublication =
+            new SimpleJdbcInsert(dataSource).withTableName("publication")
+                .usingGeneratedKeyColumns("id");
+    }
+
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
     }
 
     /*
@@ -89,17 +107,24 @@ public class JdbcUtils {
     }
 
     public void addAuthor(Author author) {
-        // Map<String, Object> parameters = new HashMap<String, Object>(2);
-        // parameters.put("family_names", author.getFamilyNames());
-        // parameters.put("given_names", author.getGivenNames());
         SqlParameterSource parameters =
             new BeanPropertySqlParameterSource(author);
         Number newId = insertAuthor.executeAndReturnKey(parameters);
         author.setId(newId.longValue());
     }
 
-    public JdbcTemplate getJdbcTemplate() {
-        return jdbcTemplate;
+    public void addPublisher(Publisher publisher) {
+        SqlParameterSource parameters =
+            new BeanPropertySqlParameterSource(publisher);
+        Number newId = insertPublisher.executeAndReturnKey(parameters);
+        publisher.setId(newId.longValue());
+    }
+
+    public void addPublication(Publication publication) {
+        SqlParameterSource parameters =
+            new BeanPropertySqlParameterSource(publication);
+        Number newId = insertPublication.executeAndReturnKey(parameters);
+        publication.setId(newId.longValue());
     }
 
 }
