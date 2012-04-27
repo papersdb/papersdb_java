@@ -264,7 +264,10 @@ public class TestPaper extends TestHibernate {
         JournalPub pub = new JournalPub();
         pub.setName(name);
         pub.setDate(new Date());
-        getJdbcUtils().addPublication(pub);
+        pub.setPaper(paper);
+        pub.setPublisher(publisher);
+        Long pubId = getJdbcUtils().addPublication(pub);
+        Assert.assertNotNull("autogen key shouldn't be null", pubId);
 
         paper.setPublication(pub);
         paper = paperDAO.save(paper);

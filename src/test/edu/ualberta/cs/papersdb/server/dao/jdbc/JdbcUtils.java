@@ -22,11 +22,12 @@ import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.model.Publisher;
 import edu.ualberta.cs.papersdb.model.Ranking;
 import edu.ualberta.cs.papersdb.model.publication.JournalPub;
-import edu.ualberta.cs.papersdb.model.publication.Publication;
 
 public class JdbcUtils {
 
     private JdbcTemplate jdbcTemplate;
+
+    private DataSource dataSource;
 
     private SimpleJdbcInsert insertAuthor;
 
@@ -35,6 +36,7 @@ public class JdbcUtils {
     private SimpleJdbcInsert insertPublisher;
 
     public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.insertAuthor =
             new SimpleJdbcInsert(dataSource).withTableName("author")
@@ -60,6 +62,7 @@ public class JdbcUtils {
     public Paper getPaper(String title) {
         String sql = "SELECT * FROM paper WHERE title = ?";
         RowMapper<Paper> mapper = new RowMapper<Paper>() {
+            @Override
             public Paper mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Paper paper = new Paper();
                 paper.setId(rs.getLong("id"));
@@ -93,6 +96,7 @@ public class JdbcUtils {
     public Author getAuthor(String names) {
         String sql = "select * from author where family_names = ?";
         RowMapper<Author> mapper = new RowMapper<Author>() {
+            @Override
             public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Author author = new Author();
                 author.setId(rs.getLong("id"));
@@ -122,17 +126,20 @@ public class JdbcUtils {
         publisher.setId(newId.longValue());
     }
 
-    public void addPublication(Publication publication) {
-        SqlParameterSource parameters =
-            new BeanPropertySqlParameterSource(publication);
-        Number newId = insertPublication.executeAndReturnKey(parameters);
-        publication.setId(newId.longValue());
-    }
+    public Long addPublication(final JournalPub publication) {
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(dataSource)
+            .withTableName("publication").usingGeneratedKeyColumns("id");
+        Map<String, Object> parameters = new HashMap<String, Object>(0);
 
-    public void addPublication(JournalPub publication) {
-        Map<String, Object> parameters = new HashMap<String, Object>(3);
-        Number newId = insertPublication.executeAndReturnKey(parameters);
-        publication.setId(newId.longValue());
+        parameters.put("discriminator", JournalPub.class.getSimpleName());
+        parameters.put("name", publication.getName());
+        parameters.put("date", new java.sql.Date(publication.getDate()
+            .getTime()));
+        parameters.put("paper_id", publication.getPaper().getId());
+        parameters.put("publisher_id", publication.getPublisher().getId());
+
+        Number newId = jdbcInsert.executeAndReturnKey(parameters);
+        return newId.longValue();
     }
 
 }

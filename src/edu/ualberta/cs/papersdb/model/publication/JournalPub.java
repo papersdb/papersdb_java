@@ -4,9 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-
 @Entity
-@DiscriminatorValue("Journal")
+@DiscriminatorValue("JournalPub")
 public class JournalPub extends Publication {
     private static final long serialVersionUID = 1L;
 
