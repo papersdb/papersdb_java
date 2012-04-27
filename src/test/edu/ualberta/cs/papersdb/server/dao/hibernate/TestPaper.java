@@ -2,6 +2,7 @@ package test.edu.ualberta.cs.papersdb.server.dao.hibernate;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.ualberta.cs.papersdb.model.Author;
 import edu.ualberta.cs.papersdb.model.Collaboration;
 import edu.ualberta.cs.papersdb.model.Paper;
+import edu.ualberta.cs.papersdb.model.Publisher;
 import edu.ualberta.cs.papersdb.model.Ranking;
+import edu.ualberta.cs.papersdb.model.publication.JournalPub;
 import edu.ualberta.cs.papersdb.server.dao.PaperDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -214,10 +217,7 @@ public class TestPaper extends TestHibernate {
     }
 
     @Test
-    public void addRemoveAuthors() {
-        Paper paper = new Paper();
-        paper.setTitle(name);
-
+    public void paperAuthors() {
         Set<Author> authors = new HashSet<Author>();
         int numAuthors = getR().nextInt(6) + 1;
         for (int i = 0; i < numAuthors; ++i) {
@@ -227,6 +227,9 @@ public class TestPaper extends TestHibernate {
             getJdbcUtils().addAuthor(author);
             authors.add(author);
         }
+
+        Paper paper = new Paper();
+        paper.setTitle(name);
         paper.getAuthors().addAll(authors);
         paper = paperDAO.save(paper);
         paperDAO.flush();
@@ -240,9 +243,32 @@ public class TestPaper extends TestHibernate {
             authors.remove(author);
             paper.getAuthors().remove(author);
             paper = paperDAO.save(paper);
+            paperDAO.flush();
 
             Assert.assertEquals(authors.size(), paper.getAuthors().size());
         }
+    }
+
+    @Test
+    public void paperPublication() {
+        Paper paper = new Paper();
+        paper.setTitle(name);
+        paper = paperDAO.save(paper);
+        paperDAO.flush();
+
+        Publisher publisher = new Publisher();
+        publisher.setName(name);
+        publisher.setRanking(Ranking.TOP_TIER);
+        getJdbcUtils().addPublisher(publisher);
+
+        JournalPub pub = new JournalPub();
+        pub.setName(name);
+        pub.setDate(new Date());
+        getJdbcUtils().addPublication(pub);
+
+        paper.setPublication(pub);
+        paper = paperDAO.save(paper);
+        paperDAO.flush();
 
     }
 }

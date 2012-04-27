@@ -18,6 +18,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.ForeignKey;
 
 import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.model.Publisher;
@@ -27,7 +30,7 @@ import edu.ualberta.cs.papersdb.model.Publisher;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "DISCRIMINATOR",
     discriminatorType = DiscriminatorType.STRING)
-public class Publication implements Serializable {
+public abstract class Publication implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
@@ -55,6 +58,7 @@ public class Publication implements Serializable {
         this.name = name;
     }
 
+    @NotNull(message = "{edu.ualberta.cs.papersDb.model.Publication.date.NotEmpty}")
     @Column(name = "DATE", nullable = false)
     public Date getDate() {
         return date;
@@ -64,8 +68,10 @@ public class Publication implements Serializable {
         this.date = date;
     }
 
+    @NotNull(message = "{edu.ualberta.cs.papersDb.model.Publication.publisher.NotEmpty}")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PUBLISHER_ID")
+    @ForeignKey(name = "FK_PUBLICATION_PUBLISHER")
+    @JoinColumn(name = "PUBLISHER_ID", nullable = false)
     public Publisher getPublisher() {
         return publisher;
     }
@@ -74,8 +80,10 @@ public class Publication implements Serializable {
         this.publisher = publisher;
     }
 
+    @NotNull(message = "{edu.ualberta.cs.papersDb.model.Publication.paper.NotEmpty}")
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "PAPER_ID")
+    @ForeignKey(name = "FK_PUBLICATION_PAPER")
+    @JoinColumn(name = "PAPER_ID", nullable = false)
     public Paper getPaper() {
         return paper;
     }

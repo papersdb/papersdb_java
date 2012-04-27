@@ -2,6 +2,7 @@ package test.edu.ualberta.cs.papersdb.server.dao.jdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import edu.ualberta.cs.papersdb.model.Collaboration;
 import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.model.Publisher;
 import edu.ualberta.cs.papersdb.model.Ranking;
+import edu.ualberta.cs.papersdb.model.publication.JournalPub;
 import edu.ualberta.cs.papersdb.model.publication.Publication;
 
 public class JdbcUtils {
@@ -123,6 +125,12 @@ public class JdbcUtils {
     public void addPublication(Publication publication) {
         SqlParameterSource parameters =
             new BeanPropertySqlParameterSource(publication);
+        Number newId = insertPublication.executeAndReturnKey(parameters);
+        publication.setId(newId.longValue());
+    }
+
+    public void addPublication(JournalPub publication) {
+        Map<String, Object> parameters = new HashMap<String, Object>(3);
         Number newId = insertPublication.executeAndReturnKey(parameters);
         publication.setId(newId.longValue());
     }
