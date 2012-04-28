@@ -126,7 +126,7 @@ public class JdbcUtils {
         publisher.setId(newId.longValue());
     }
 
-    public Long addPublication(final JournalPub publication) {
+    public void addPublication(final JournalPub publication) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(dataSource)
             .withTableName("publication").usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<String, Object>(0);
@@ -139,7 +139,7 @@ public class JdbcUtils {
         parameters.put("publisher_id", publication.getPublisher().getId());
 
         Number newId = jdbcInsert.executeAndReturnKey(parameters);
-        return newId.longValue();
+        publication.setId(newId.longValue());
     }
 
 }

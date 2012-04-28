@@ -188,7 +188,7 @@ public class TestPaper extends TestHibernate {
         Assert.assertNotNull(result);
 
         String newTitle = getMethodNameR();
-        paper = paperDAO.findById(result.getId());
+        paper = paperDAO.getById(result.getId());
         paper.setTitle(newTitle);
         paperDAO.save(paper);
         paperDAO.flush();
@@ -209,7 +209,7 @@ public class TestPaper extends TestHibernate {
         Paper result = getJdbcUtils().getPaper(name);
         Assert.assertNotNull(result);
 
-        paper = paperDAO.findById(result.getId());
+        paper = paperDAO.getById(result.getId());
         paperDAO.delete(paper);
         paperDAO.flush();
 
@@ -260,18 +260,87 @@ public class TestPaper extends TestHibernate {
         publisher.setName(name);
         publisher.setRanking(Ranking.TOP_TIER);
         getJdbcUtils().addPublisher(publisher);
+        Assert
+            .assertNotNull("autogen key shouldn't be null", publisher.getId());
 
         JournalPub pub = new JournalPub();
         pub.setName(name);
         pub.setDate(new Date());
         pub.setPaper(paper);
         pub.setPublisher(publisher);
-        Long pubId = getJdbcUtils().addPublication(pub);
-        Assert.assertNotNull("autogen key shouldn't be null", pubId);
+        getJdbcUtils().addPublication(pub);
+        Assert.assertNotNull("autogen key shouldn't be null", pub.getId());
 
-        paper.setPublication(pub);
-        paper = paperDAO.save(paper);
+        paperDAO.clear();
+        paper = paperDAO.getById(paper.getId());
+        Assert.assertEquals(pub.getId(), paper.getPublication().getId());
+
+        // test delete
+        paperDAO.delete(paper);
+        paperDAO.flush();
+        Assert.assertEquals(0, countRowsInTable("publication"));
+    }
+
+    @Test
+    public void relatedPapers() {
+        Paper parentPaper = new Paper();
+        parentPaper.setTitle(name);
+        parentPaper = paperDAO.save(parentPaper);
+
+        HashSet<Paper> relatedPapers = new HashSet<Paper>(0);
+        for (int i = 0, n = getR().nextInt(5) + 2; i < n; ++i) {
+            Paper paper = new Paper();
+            paper.setTitle(getMethodNameR());
+            paper = paperDAO.save(paper);
+            relatedPapers.add(paper);
+
+            parentPaper.getRelatedPapers().clear();
+            parentPaper.getRelatedPapers().addAll(relatedPapers);
+            parentPaper = paperDAO.save(parentPaper);
+            paperDAO.flush();
+
+            Assert.assertEquals(relatedPapers.size(), parentPaper
+                .getRelatedPapers().size());
+        }
+
+        while (relatedPapers.size() > 0) {
+            Paper paper = relatedPapers.iterator().next();
+            relatedPapers.remove(paper);
+
+            parentPaper.getRelatedPapers().remove(paper);
+            paperDAO.save(parentPaper);
+
+            paperDAO.delete(paper);
+            paperDAO.flush();
+
+            parentPaper = paperDAO.getById(parentPaper.getId());
+            Assert.assertEquals(relatedPapers.size(), parentPaper
+                .getRelatedPapers().size());
+        }
+
+        Assert.assertEquals(1, countRowsInTable("paper"));
+
+        // add 1 related paper
+        Paper relatedPaper = new Paper();
+        relatedPaper.setTitle(getMethodNameR());
+        relatedPaper = paperDAO.save(relatedPaper);
         paperDAO.flush();
 
+        parentPaper.getRelatedPapers().clear();
+        parentPaper.getRelatedPapers().add(relatedPaper);
+        paperDAO.save(parentPaper);
+        paperDAO.flush();
+
+        Assert.assertEquals(2, countRowsInTable("paper"));
+
+        // delete parent paper and ensure related paper still there
+        paperDAO.delete(parentPaper);
+        paperDAO.flush();
+        Assert.assertEquals(1, countRowsInTable("paper"));
+
+        Set<Paper> papers = paperDAO.getAll();
+        Assert.assertEquals(1, papers.size());
+        Assert.assertEquals(relatedPaper.getId(),
+            papers.iterator().next().getId());
     }
 }

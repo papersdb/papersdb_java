@@ -32,6 +32,7 @@ public class TestHibernate extends
         return R;
     }
 
+    @Override
     @Autowired
     public void setDataSource(DataSource dataSource) {
         super.setDataSource(dataSource);

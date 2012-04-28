@@ -5,11 +5,11 @@ import java.util.Set;
 
 public interface GenericDAO<T, ID extends Serializable> {
 
-    T findById(ID id);
+    T getById(ID id);
 
-    Set<T> findAll();
+    Set<T> getAll();
 
-    Set<T> findByExample(T exampleInstance, String... excludeProperties);
+    Set<T> getByExample(T exampleInstance, String... excludeProperties);
 
     T save(T entity);
 

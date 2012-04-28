@@ -35,7 +35,7 @@ public class PaperDAOHibernateImpl
 
         Paper paper = new Paper();
         paper.setTitle(title);
-        Set<Paper> result = findByExample(paper, "isPublic");
+        Set<Paper> result = getByExample(paper, "isPublic");
         if (result.size() > 1) {
             // should never happen because title is a unique key
             throw new IllegalStateException(MessageFormat
@@ -53,7 +53,7 @@ public class PaperDAOHibernateImpl
 
         Paper paper = new Paper();
         paper.setDOI(doi);
-        Set<Paper> result = findByExample(paper, "isPublic");
+        Set<Paper> result = getByExample(paper, "isPublic");
         if (result.size() == 0) {
             throw new IllegalStateException(MessageFormat
                 .format("no paper with DOI: \"{0}\"",

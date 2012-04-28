@@ -34,7 +34,7 @@ public class AuthorDAOHibernateImpl
 
         Author author = new Author();
         author.setFamilyNames(familyName);
-        Set<Author> result = findByExample(author);
+        Set<Author> result = getByExample(author);
         if (result.size() > 1) {
             throw new IllegalStateException(MessageFormat
                 .format("more than one author with family name: \"{0}\"",
@@ -64,7 +64,7 @@ public class AuthorDAOHibernateImpl
 
         Author author = new Author();
         author.setEmail(email);
-        Set<Author> result = findByExample(author);
+        Set<Author> result = getByExample(author);
         if (result.size() == 0) {
             throw new IllegalStateException(MessageFormat
                 .format("no author with email: \"{0}\"", email));
