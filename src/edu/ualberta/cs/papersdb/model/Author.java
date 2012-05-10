@@ -4,15 +4,13 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -27,7 +25,7 @@ public class Author implements Serializable {
     private String familyNames;
     private String givenNames;
     private String email;
-    private Set<Paper> papers = new HashSet<Paper>(0);
+    private Set<AuthorRanked> papers = new HashSet<AuthorRanked>(0);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -77,15 +75,12 @@ public class Author implements Serializable {
         this.email = email;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "AUTHOR_PAPER",
-        joinColumns = { @JoinColumn(name = "AUTHOR_ID", nullable = false, updatable = false) },
-        inverseJoinColumns = { @JoinColumn(name = "PAPER_ID", nullable = false, updatable = false) })
-    public Set<Paper> getPapers() {
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<AuthorRanked> getPapers() {
         return papers;
     }
 
-    public void setPapers(Set<Paper> papers) {
+    public void setPapers(Set<AuthorRanked> papers) {
         this.papers = papers;
     }
 

@@ -24,6 +24,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ualberta.cs.papersdb.model.Author;
+import edu.ualberta.cs.papersdb.model.AuthorRanked;
 import edu.ualberta.cs.papersdb.model.Collaboration;
 import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.model.Publisher;
@@ -218,15 +219,17 @@ public class TestPaper extends TestHibernate {
 
     @Test
     public void paperAuthors() {
-        Set<Author> authors = new HashSet<Author>();
+        Set<AuthorRanked> authors = new HashSet<AuthorRanked>();
         int numAuthors = getR().nextInt(6) + 1;
         for (int i = 0; i < numAuthors; ++i) {
-            Author author = new Author();
+            AuthorRanked author = new AuthorRanked();
             author.setFamilyNames(name);
             author.setGivenNames(getMethodNameR());
+            author.setRank(i);
             getJdbcUtils().addAuthor(author);
             authors.add(author);
         }
+        Assert.assertEquals(numAuthors, countRowsInTable("author"));
 
         Paper paper = new Paper();
         paper.setTitle(name);
@@ -234,12 +237,12 @@ public class TestPaper extends TestHibernate {
         paper = paperDAO.save(paper);
         paperDAO.flush();
 
-        Assert.assertEquals(numAuthors, countRowsInTable("author"));
+        Assert.assertEquals(numAuthors, paper.getAuthors().size());
 
         Author author;
 
         for (int i = 0; i < numAuthors; ++i) {
-            author = authors.iterator().next();
+            author = authors.iterator().next().getAuthor();
             authors.remove(author);
             paper.getAuthors().remove(author);
             paper = paperDAO.save(paper);

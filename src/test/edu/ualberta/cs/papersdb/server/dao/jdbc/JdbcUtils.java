@@ -17,6 +17,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import edu.ualberta.cs.papersdb.model.Author;
+import edu.ualberta.cs.papersdb.model.AuthorRanked;
 import edu.ualberta.cs.papersdb.model.Collaboration;
 import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.model.Publisher;
@@ -113,6 +114,13 @@ public class JdbcUtils {
     }
 
     public void addAuthor(Author author) {
+        SqlParameterSource parameters =
+            new BeanPropertySqlParameterSource(author);
+        Number newId = insertAuthor.executeAndReturnKey(parameters);
+        author.setId(newId.longValue());
+    }
+
+    public void addAuthor(AuthorRanked author) {
         SqlParameterSource parameters =
             new BeanPropertySqlParameterSource(author);
         Number newId = insertAuthor.executeAndReturnKey(parameters);

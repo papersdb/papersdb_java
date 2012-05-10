@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -20,12 +22,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Null;
 
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import edu.ualberta.cs.papersdb.model.publication.Publication;
@@ -47,7 +52,7 @@ public class Paper implements Serializable {
     private String doi;
     private Set<Collaboration> collaborations = new HashSet<Collaboration>(0);
     private boolean isPublic = false;
-    private Set<Author> authors = new HashSet<Author>(0);
+    private SortedSet<AuthorRanked> authors = new TreeSet<AuthorRanked>();
     private Publication publication;
     private Set<Paper> relatedPapers = new HashSet<Paper>(0);
     private Set<String> relatedUrls = new HashSet<String>(0);
@@ -174,15 +179,13 @@ public class Paper implements Serializable {
         this.isPublic = isPublic;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "AUTHOR_PAPER",
-        joinColumns = { @JoinColumn(name = "PAPER_ID", nullable = false, updatable = false) },
-        inverseJoinColumns = { @JoinColumn(name = "AUTHOR_ID", nullable = false, updatable = false) })
-    public Set<Author> getAuthors() {
+    @OneToMany(mappedBy = "paper", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Sort(type = SortType.COMPARATOR, comparator = AuthorRankedComparator.class)
+    public SortedSet<AuthorRanked> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(Set<Author> authors) {
+    public void setAuthors(SortedSet<AuthorRanked> authors) {
         this.authors = authors;
     }
 
