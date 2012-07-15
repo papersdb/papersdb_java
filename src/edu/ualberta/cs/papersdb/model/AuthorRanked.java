@@ -5,16 +5,13 @@ import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 import org.hibernate.annotations.ForeignKey;
 
@@ -26,7 +23,6 @@ public class AuthorRanked implements Serializable {
     private Long id;
     private int rank;
     private Author author;
-    private Paper paper;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -57,26 +53,6 @@ public class AuthorRanked implements Serializable {
 
     public void setAuthor(Author author) {
         this.author = author;
-    }
-
-    @Null(message = "{edu.ualberta.cs.papersdb.model.AuthorRanked.paper.NotNull}")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PAPER_ID")
-    public Paper getPaper() {
-        return paper;
-    }
-
-    public void setPaper(Paper paper) {
-        this.paper = paper;
-    }
-
-    public void setFamilyNames(String familyNames) {
-        author.setFamilyNames(familyNames);
-    }
-
-    public void setGivenNames(String givenNames) {
-        author.setGivenNames(givenNames);
-
     }
 
 }

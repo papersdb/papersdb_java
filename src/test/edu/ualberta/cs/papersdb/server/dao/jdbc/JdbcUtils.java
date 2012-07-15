@@ -26,128 +26,128 @@ import edu.ualberta.cs.papersdb.model.publication.JournalPub;
 
 public class JdbcUtils {
 
-    private JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
-    private DataSource dataSource;
+	private DataSource dataSource;
 
-    private SimpleJdbcInsert insertAuthor;
+	private SimpleJdbcInsert insertAuthor;
 
-    private SimpleJdbcInsert insertPublication;
+	private SimpleJdbcInsert insertAuthorRanked;
 
-    private SimpleJdbcInsert insertPublisher;
+	private SimpleJdbcInsert insertPublication;
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.insertAuthor =
-            new SimpleJdbcInsert(dataSource).withTableName("author")
-                .usingGeneratedKeyColumns("id");
+	private SimpleJdbcInsert insertPublisher;
 
-        this.insertPublisher =
-            new SimpleJdbcInsert(dataSource).withTableName("publisher")
-                .usingGeneratedKeyColumns("id");
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+		this.insertAuthor = new SimpleJdbcInsert(dataSource).withTableName(
+				"author").usingGeneratedKeyColumns("id");
+		this.insertAuthorRanked = new SimpleJdbcInsert(dataSource)
+				.withTableName("author_ranked").usingGeneratedKeyColumns("id");
 
-        this.insertPublication =
-            new SimpleJdbcInsert(dataSource).withTableName("publication")
-                .usingGeneratedKeyColumns("id");
-    }
+		this.insertPublisher = new SimpleJdbcInsert(dataSource).withTableName(
+				"publisher").usingGeneratedKeyColumns("id");
 
-    public JdbcTemplate getJdbcTemplate() {
-        return jdbcTemplate;
-    }
+		this.insertPublication = new SimpleJdbcInsert(dataSource)
+				.withTableName("publication").usingGeneratedKeyColumns("id");
+	}
 
-    /*
-     * Can also use: jdbcTemplate.queryForObject(sql, new Object[] { title },
-     * new BeanPropertyRowMapper<Paper>(Paper.class));
-     */
-    public Paper getPaper(String title) {
-        String sql = "SELECT * FROM paper WHERE title = ?";
-        RowMapper<Paper> mapper = new RowMapper<Paper>() {
-            @Override
-            public Paper mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Paper paper = new Paper();
-                paper.setId(rs.getLong("id"));
-                paper.setTitle(rs.getString("title"));
-                if (rs.getString("ranking_id") != null) {
-                    paper
-                        .setRanking(Ranking.valueOf(rs.getString("ranking_id")));
-                }
-                return paper;
-            }
-        };
+	public JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
 
-        Paper paper = getJdbcTemplate().queryForObject(sql, mapper, title);
-        Set<Collaboration> collaborations = new HashSet<Collaboration>(0);
+	/*
+	 * Can also use: jdbcTemplate.queryForObject(sql, new Object[] { title },
+	 * new BeanPropertyRowMapper<Paper>(Paper.class));
+	 */
+	public Paper getPaper(String title) {
+		String sql = "SELECT * FROM paper WHERE title = ?";
+		RowMapper<Paper> mapper = new RowMapper<Paper>() {
+			@Override
+			public Paper mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Paper paper = new Paper();
+				paper.setId(rs.getLong("id"));
+				paper.setTitle(rs.getString("title"));
+				if (rs.getString("ranking_id") != null) {
+					paper.setRanking(Ranking.valueOf(rs.getString("ranking_id")));
+				}
+				return paper;
+			}
+		};
 
-        sql =
-            "SELECT collaboration_id FROM paper_collaboration WHERE paper_id = ?";
+		Paper paper = getJdbcTemplate().queryForObject(sql, mapper, title);
+		Set<Collaboration> collaborations = new HashSet<Collaboration>(0);
 
-        List<Map<String, Object>> rows =
-            getJdbcTemplate().queryForList(sql, paper.getId());
-        for (Map<String, Object> row : rows) {
-            collaborations.add(Collaboration.valueOf((String) row
-                .get("collaboration_id")));
-        }
+		sql = "SELECT collaboration_id FROM paper_collaboration WHERE paper_id = ?";
 
-        paper.getCollaborations().addAll(collaborations);
+		List<Map<String, Object>> rows = getJdbcTemplate().queryForList(sql,
+				paper.getId());
+		for (Map<String, Object> row : rows) {
+			collaborations.add(Collaboration.valueOf((String) row
+					.get("collaboration_id")));
+		}
 
-        return paper;
-    }
+		paper.getCollaborations().addAll(collaborations);
 
-    public Author getAuthor(String names) {
-        String sql = "select * from author where family_names = ?";
-        RowMapper<Author> mapper = new RowMapper<Author>() {
-            @Override
-            public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Author author = new Author();
-                author.setId(rs.getLong("id"));
-                author.setEmail(rs.getString("email"));
-                author.setFamilyNames(rs.getString("family_names"));
-                author.setGivenNames(rs.getString("given_names"));
-                author.setTitle(rs.getString("title"));
-                return author;
-            }
+		return paper;
+	}
 
-        };
+	public Author getAuthor(String names) {
+		String sql = "select * from author where family_names = ?";
+		RowMapper<Author> mapper = new RowMapper<Author>() {
+			@Override
+			public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Author author = new Author();
+				author.setId(rs.getLong("id"));
+				author.setEmail(rs.getString("email"));
+				author.setFamilyNames(rs.getString("family_names"));
+				author.setGivenNames(rs.getString("given_names"));
+				author.setTitle(rs.getString("title"));
+				return author;
+			}
 
-        return getJdbcTemplate().queryForObject(sql, mapper, names);
-    }
+		};
 
-    public void addAuthor(Author author) {
-        SqlParameterSource parameters =
-            new BeanPropertySqlParameterSource(author);
-        Number newId = insertAuthor.executeAndReturnKey(parameters);
-        author.setId(newId.longValue());
-    }
+		return getJdbcTemplate().queryForObject(sql, mapper, names);
+	}
 
-    public void addAuthor(AuthorRanked author) {
-        SqlParameterSource parameters =
-            new BeanPropertySqlParameterSource(author);
-        Number newId = insertAuthor.executeAndReturnKey(parameters);
-        author.setId(newId.longValue());
-    }
+	public void addAuthor(Author author) {
+		SqlParameterSource parameters = new BeanPropertySqlParameterSource(
+				author);
+		Number newId = insertAuthor.executeAndReturnKey(parameters);
+		author.setId(newId.longValue());
+	}
 
-    public void addPublisher(Publisher publisher) {
-        SqlParameterSource parameters =
-            new BeanPropertySqlParameterSource(publisher);
-        Number newId = insertPublisher.executeAndReturnKey(parameters);
-        publisher.setId(newId.longValue());
-    }
+	public void addAuthorRanked(AuthorRanked authorRanked) {
+		Map<String, Object> parameters = new HashMap<String, Object>(0);
+		parameters.put("rank", authorRanked.getRank());
+		parameters.put("author_id", authorRanked.getAuthor().getId());
+		Number newId = insertAuthorRanked.executeAndReturnKey(parameters);
+		authorRanked.setId(newId.longValue());
+	}
 
-    public void addPublication(final JournalPub publication) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(dataSource)
-            .withTableName("publication").usingGeneratedKeyColumns("id");
-        Map<String, Object> parameters = new HashMap<String, Object>(0);
+	public void addPublisher(Publisher publisher) {
+		SqlParameterSource parameters = new BeanPropertySqlParameterSource(
+				publisher);
+		Number newId = insertPublisher.executeAndReturnKey(parameters);
+		publisher.setId(newId.longValue());
+	}
 
-        parameters.put("discriminator", JournalPub.class.getSimpleName());
-        parameters.put("name", publication.getName());
-        parameters.put("date", new java.sql.Date(publication.getDate()
-            .getTime()));
-        parameters.put("paper_id", publication.getPaper().getId());
-        parameters.put("publisher_id", publication.getPublisher().getId());
+	public void addPublication(final JournalPub publication) {
+		SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(dataSource)
+				.withTableName("publication").usingGeneratedKeyColumns("id");
+		Map<String, Object> parameters = new HashMap<String, Object>(0);
 
-        Number newId = jdbcInsert.executeAndReturnKey(parameters);
-        publication.setId(newId.longValue());
-    }
+		parameters.put("discriminator", JournalPub.class.getSimpleName());
+		parameters.put("name", publication.getName());
+		parameters.put("date", new java.sql.Date(publication.getDate()
+				.getTime()));
+		parameters.put("paper_id", publication.getPaper().getId());
+		parameters.put("publisher_id", publication.getPublisher().getId());
+
+		Number newId = jdbcInsert.executeAndReturnKey(parameters);
+		publication.setId(newId.longValue());
+	}
 
 }
