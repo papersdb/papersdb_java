@@ -217,7 +217,7 @@ public class TestPaper extends TestHibernate {
 	@Test
 	public void paperAuthors() {
 		Set<AuthorRanked> authors = new HashSet<AuthorRanked>();
-		int numAuthors = getR().nextInt(6) + 1;
+		int numAuthors = 10;
 		for (int i = 0; i < numAuthors; ++i) {
 			Author author = new Author();
 			author.setFamilyNames(name);
@@ -240,10 +240,17 @@ public class TestPaper extends TestHibernate {
 
 		Assert.assertEquals(numAuthors, paper.getAuthors().size());
 
+		AuthorRanked authorRanked;
 		Author author;
 
 		for (int i = 0; i < numAuthors; ++i) {
-			author = authors.iterator().next().getAuthor();
+			authorRanked = authors.iterator().next();
+			author = authorRanked.getAuthor();
+
+			log.debug("deleting author with rank {}", authorRanked.getRank());
+
+			Assert.assertEquals(i, authorRanked.getRank());
+
 			authors.remove(author);
 			paper.getAuthors().remove(author);
 			paper = paperDAO.save(paper);
