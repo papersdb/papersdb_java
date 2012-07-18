@@ -1,4 +1,4 @@
-package test.edu.ualberta.cs.papersdb.server.dao.jdbc;
+package edu.ualberta.cs.papersdb.server.dao.jdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,4 +1,4 @@
-package test.edu.ualberta.cs.papersdb.server.dao.hibernate;
+package edu.ualberta.cs.papersdb.server.dao.hibernate;
 
 import java.math.BigInteger;
 import java.util.Arrays;
