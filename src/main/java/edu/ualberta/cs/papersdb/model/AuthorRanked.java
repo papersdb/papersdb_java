@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -17,12 +18,13 @@ import org.hibernate.annotations.ForeignKey;
 
 @Entity
 @Table(name = "AUTHOR_RANKED")
-public class AuthorRanked implements Serializable {
+public class AuthorRanked implements Serializable, Comparable<AuthorRanked> {
     private static final long serialVersionUID = 1L;
 
     private Long id;
     private int rank;
     private Author author;
+    private Paper paper;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,6 +55,23 @@ public class AuthorRanked implements Serializable {
 
     public void setAuthor(Author author) {
         this.author = author;
+    }
+
+    @Override
+    public int compareTo(AuthorRanked ar) {
+        return rank - ar.rank;
+    }
+
+    @NotNull(message = "{edu.ualberta.cs.papersDb.model.AuthorRanked.paper.NotEmpty}")
+    @ManyToOne
+    @ForeignKey(name = "FK_AUTHOR_RANKED_PAPER")
+    @JoinColumn(name = "PAPER_ID")
+    public Paper getPaper() {
+        return paper;
+    }
+
+    public void setPaper(Paper paper) {
+        this.paper = paper;
     }
 
 }
