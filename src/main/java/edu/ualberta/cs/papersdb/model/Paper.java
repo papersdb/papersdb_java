@@ -1,6 +1,5 @@
 package edu.ualberta.cs.papersdb.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,9 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -37,10 +33,9 @@ import edu.ualberta.cs.papersdb.model.publication.Publication;
 
 @Entity
 @Table(name = "PAPER")
-public class Paper implements Serializable {
+public class Paper extends AbstractPapersdbModel {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
     private String title;
     private String pubAbstract;
     private String keywords;
@@ -57,16 +52,6 @@ public class Paper implements Serializable {
     private Set<Paper> relatedPapers = new HashSet<Paper>(0);
     private Set<String> relatedUrls = new HashSet<String>(0);
     private Set<String> attachments = new HashSet<String>(0);
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @NotEmpty(message = "{edu.ualberta.cs.papersDb.model.Paper.title.NotEmpty}")
     @Column(name = "TITLE", length = 500, unique = true, nullable = false)

@@ -1,15 +1,11 @@
 package edu.ualberta.cs.papersdb.model;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -17,25 +13,14 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "AUTHOR")
-public class Author implements Serializable {
+public class Author extends AbstractPapersdbModel {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
     private String title;
     private String familyNames;
     private String givenNames;
     private String email;
     private Set<AuthorRanked> papers = new HashSet<AuthorRanked>(0);
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Column(name = "TITLE")
     public String getTitle() {

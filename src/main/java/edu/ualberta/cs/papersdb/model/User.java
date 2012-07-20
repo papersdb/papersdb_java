@@ -1,15 +1,11 @@
 package edu.ualberta.cs.papersdb.model;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -18,10 +14,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "USER")
-public class User implements Serializable {
+public class User extends AbstractPapersdbModel {
     private static final long serialVersionUID = 1L;
 
-    Long id;
     boolean isVerified = false;
     int accessLevel = 0;
     String email;
@@ -30,16 +25,6 @@ public class User implements Serializable {
     String login;
     String password;
     private Set<Paper> papers = new HashSet<Paper>(0);
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Column(name = "IS_VERIFIED")
     public boolean isVerified() {

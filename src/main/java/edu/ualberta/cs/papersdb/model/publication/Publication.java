@@ -1,6 +1,5 @@
 package edu.ualberta.cs.papersdb.model.publication;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -9,9 +8,6 @@ import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -22,6 +18,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.ForeignKey;
 
+import edu.ualberta.cs.papersdb.model.AbstractPapersdbModel;
 import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.model.Publisher;
 
@@ -30,24 +27,13 @@ import edu.ualberta.cs.papersdb.model.Publisher;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "DISCRIMINATOR",
     discriminatorType = DiscriminatorType.STRING)
-public abstract class Publication implements Serializable {
+public abstract class Publication extends AbstractPapersdbModel {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
     private String name;
     private Date date;
     private Publisher publisher;
     private Paper paper;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Column(name = "NAME")
     public String getName() {

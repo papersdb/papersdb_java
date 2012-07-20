@@ -1,13 +1,8 @@
 package edu.ualberta.cs.papersdb.model;
 
-import java.io.Serializable;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -18,23 +13,13 @@ import org.hibernate.annotations.ForeignKey;
 
 @Entity
 @Table(name = "AUTHOR_RANKED")
-public class AuthorRanked implements Serializable, Comparable<AuthorRanked> {
+public class AuthorRanked extends AbstractPapersdbModel implements
+    Comparable<AuthorRanked> {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
     private int rank;
     private Author author;
     private Paper paper;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Column(name = "RANK")
     public int getRank() {

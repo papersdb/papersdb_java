@@ -24,8 +24,8 @@
         <mapping package="edu.ualberta.cs.papersdb.model" />
 
         <!-- Mapped classes -->
-        <mapping class="edu.ualberta.cs.papersdb.model.Paper" />
         <mapping class="edu.ualberta.cs.papersdb.model.User" />
+        <mapping class="edu.ualberta.cs.papersdb.model.Paper" />
         <mapping class="edu.ualberta.cs.papersdb.model.Author" />
         <mapping class="edu.ualberta.cs.papersdb.model.AuthorRanked" />
         <mapping class="edu.ualberta.cs.papersdb.model.Publisher" />
