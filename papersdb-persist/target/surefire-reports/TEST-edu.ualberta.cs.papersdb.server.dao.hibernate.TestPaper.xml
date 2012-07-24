@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="3" time="2.313" errors="2" skipped="0" tests="11" name="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper">
+<testsuite failures="3" time="2.256" errors="2" skipped="0" tests="11" name="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/jdk1.6.0_32/jre/lib/amd64"/>
@@ -56,8 +56,8 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="1.536" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="delete"/>
-  <testcase time="0.058" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="create">
+  <testcase time="1.511" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="delete"/>
+  <testcase time="0.063" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="create">
     <failure message="no exception when saving without a title" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: no exception when saving without a title
 	at junit.framework.Assert.fail(Assert.java:50)
 	at edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper.create(TestPaper.java:82)
@@ -99,23 +99,23 @@
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
 </failure>
-    <system-out>21:04:52,124 DEBUG GenericHibernateDAO:84 - save: Paper
-21:04:52,125 DEBUG GenericHibernateDAO:98 - flush
-21:04:52,126 DEBUG SQL:104 - insert into PAPER (VERSION, DOI, ABSTRACT, CUSTOM_RANKING, PUB_ENTRY_DATE, KEYWORDS, PUBLIC, RANKING_ID, TITLE, SUBMITTED_BY_USER_ID, USER_TAGS, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-21:04:52,128 DEBUG SQL:104 - insert into PAPER_COLLABORATION (PAPER_ID, COLLABORATION_ID) values (?, ?)
-21:04:52,129 DEBUG SQL:104 - insert into PAPER_COLLABORATION (PAPER_ID, COLLABORATION_ID) values (?, ?)
-21:04:52,132 DEBUG SQL:104 - insert into PAPER_COLLABORATION (PAPER_ID, COLLABORATION_ID) values (?, ?)
-21:04:52,133 DEBUG SQL:104 - insert into PAPER_COLLABORATION (PAPER_ID, COLLABORATION_ID) values (?, ?)
-21:04:52,135 DEBUG SQL:104 - SELECT * FROM paper WHERE title = ?
-21:04:52,136 DEBUG SQL:104 - SELECT collaboration_id FROM paper_collaboration WHERE paper_id = ?
-21:04:52,138 DEBUG GenericHibernateDAO:84 - save: Paper
+    <system-out>21:37:35,807 DEBUG GenericHibernateDAO:84 - save: Paper
+21:37:35,807 DEBUG GenericHibernateDAO:98 - flush
+21:37:35,808 DEBUG SQL:104 - insert into PAPER (VERSION, DOI, ABSTRACT, CUSTOM_RANKING, PUB_ENTRY_DATE, KEYWORDS, PUBLIC, RANKING_ID, TITLE, SUBMITTED_BY_USER_ID, USER_TAGS, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+21:37:35,809 DEBUG SQL:104 - insert into PAPER_COLLABORATION (PAPER_ID, COLLABORATION_ID) values (?, ?)
+21:37:35,810 DEBUG SQL:104 - insert into PAPER_COLLABORATION (PAPER_ID, COLLABORATION_ID) values (?, ?)
+21:37:35,813 DEBUG SQL:104 - insert into PAPER_COLLABORATION (PAPER_ID, COLLABORATION_ID) values (?, ?)
+21:37:35,814 DEBUG SQL:104 - insert into PAPER_COLLABORATION (PAPER_ID, COLLABORATION_ID) values (?, ?)
+21:37:35,815 DEBUG SQL:104 - SELECT * FROM paper WHERE title = ?
+21:37:35,818 DEBUG SQL:104 - SELECT collaboration_id FROM paper_collaboration WHERE paper_id = ?
+21:37:35,821 DEBUG GenericHibernateDAO:84 - save: Paper
 </system-out>
   </testcase>
-  <testcase time="0.074" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="update"/>
-  <testcase time="0.05" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="saveDuplicateTitle">
+  <testcase time="0.073" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="update"/>
+  <testcase time="0.042" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="saveDuplicateTitle">
     <failure message="no exception when saving new paper with existing title" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: no exception when saving new paper with existing title
 	at junit.framework.Assert.fail(Assert.java:50)
-	at edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper.saveDuplicateTitle(TestPaper.java:103)
+	at edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper.saveDuplicateTitle(TestPaper.java:102)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
@@ -154,16 +154,16 @@
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
 </failure>
-    <system-out>21:04:52,257 DEBUG GenericHibernateDAO:84 - save: Paper
-21:04:52,258 DEBUG GenericHibernateDAO:98 - flush
-21:04:52,259 DEBUG SQL:104 - insert into PAPER (VERSION, DOI, ABSTRACT, CUSTOM_RANKING, PUB_ENTRY_DATE, KEYWORDS, PUBLIC, RANKING_ID, TITLE, SUBMITTED_BY_USER_ID, USER_TAGS, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-21:04:52,261 DEBUG GenericHibernateDAO:84 - save: Paper
+    <system-out>21:37:35,938 DEBUG GenericHibernateDAO:84 - save: Paper
+21:37:35,938 DEBUG GenericHibernateDAO:98 - flush
+21:37:35,940 DEBUG SQL:104 - insert into PAPER (VERSION, DOI, ABSTRACT, CUSTOM_RANKING, PUB_ENTRY_DATE, KEYWORDS, PUBLIC, RANKING_ID, TITLE, SUBMITTED_BY_USER_ID, USER_TAGS, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+21:37:35,941 DEBUG GenericHibernateDAO:84 - save: Paper
 </system-out>
   </testcase>
-  <testcase time="0.084" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="getByTitle"/>
-  <testcase time="0.068" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="getPapersTitleMatching"/>
-  <testcase time="0.051" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="getByDoi"/>
-  <testcase time="0.043" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="saveDuplicateDOI">
+  <testcase time="0.091" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="getByTitle"/>
+  <testcase time="0.074" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="getPapersTitleMatching"/>
+  <testcase time="0.05" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="getByDoi"/>
+  <testcase time="0.042" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="saveDuplicateDOI">
     <failure message="no exception when saving new paper with existing DOI" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: no exception when saving new paper with existing DOI
 	at junit.framework.Assert.fail(Assert.java:50)
 	at edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper.saveDuplicateDOI(TestPaper.java:171)
@@ -205,13 +205,13 @@
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
 </failure>
-    <system-out>21:04:52,502 DEBUG GenericHibernateDAO:84 - save: Paper
-21:04:52,502 DEBUG GenericHibernateDAO:98 - flush
-21:04:52,503 DEBUG SQL:104 - insert into PAPER (VERSION, DOI, ABSTRACT, CUSTOM_RANKING, PUB_ENTRY_DATE, KEYWORDS, PUBLIC, RANKING_ID, TITLE, SUBMITTED_BY_USER_ID, USER_TAGS, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-21:04:52,504 DEBUG GenericHibernateDAO:84 - save: Paper
+    <system-out>21:37:36,193 DEBUG GenericHibernateDAO:84 - save: Paper
+21:37:36,194 DEBUG GenericHibernateDAO:98 - flush
+21:37:36,195 DEBUG SQL:104 - insert into PAPER (VERSION, DOI, ABSTRACT, CUSTOM_RANKING, PUB_ENTRY_DATE, KEYWORDS, PUBLIC, RANKING_ID, TITLE, SUBMITTED_BY_USER_ID, USER_TAGS, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+21:37:36,196 DEBUG GenericHibernateDAO:84 - save: Paper
 </system-out>
   </testcase>
-  <testcase time="0.085" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="paperAuthors">
+  <testcase time="0.077" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="paperAuthors">
     <error message="Field &apos;ID&apos; doesn&apos;t have a default value" type="org.hibernate.exception.GenericJDBCException">org.hibernate.exception.GenericJDBCException: Field &apos;ID&apos; doesn&apos;t have a default value
 	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:54)
 	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:125)
@@ -283,15 +283,15 @@ Caused by: java.sql.SQLException: Field &apos;ID&apos; doesn&apos;t have a defau
 	at org.hibernate.engine.jdbc.internal.proxy.AbstractStatementProxyHandler.continueInvocation(AbstractStatementProxyHandler.java:122)
 	... 49 more
 </error>
-    <system-out>21:04:52,545 DEBUG GenericHibernateDAO:84 - save: Paper
-21:04:52,552 DEBUG GenericHibernateDAO:98 - flush
-21:04:52,553 DEBUG SQL:104 - insert into PAPER (VERSION, DOI, ABSTRACT, CUSTOM_RANKING, PUB_ENTRY_DATE, KEYWORDS, PUBLIC, RANKING_ID, TITLE, SUBMITTED_BY_USER_ID, USER_TAGS, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-21:04:52,591 DEBUG SQL:104 - INSERT INTO author (VERSION, EMAIL, FAMILY_NAMES, GIVEN_NAMES, TITLE) VALUES(?, ?, ?, ?, ?)
-21:04:52,592  WARN SqlExceptionHelper:143 - SQL Error: 1364, SQLState: HY000
-21:04:52,592 ERROR SqlExceptionHelper:144 - Field &apos;ID&apos; doesn&apos;t have a default value
+    <system-out>21:37:36,238 DEBUG GenericHibernateDAO:84 - save: Paper
+21:37:36,239 DEBUG GenericHibernateDAO:98 - flush
+21:37:36,240 DEBUG SQL:104 - insert into PAPER (VERSION, DOI, ABSTRACT, CUSTOM_RANKING, PUB_ENTRY_DATE, KEYWORDS, PUBLIC, RANKING_ID, TITLE, SUBMITTED_BY_USER_ID, USER_TAGS, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+21:37:36,270 DEBUG SQL:104 - INSERT INTO author (VERSION, EMAIL, FAMILY_NAMES, GIVEN_NAMES, TITLE) VALUES(?, ?, ?, ?, ?)
+21:37:36,271  WARN SqlExceptionHelper:143 - SQL Error: 1364, SQLState: HY000
+21:37:36,271 ERROR SqlExceptionHelper:144 - Field &apos;ID&apos; doesn&apos;t have a default value
 </system-out>
   </testcase>
-  <testcase time="0.043" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="paperPublication">
+  <testcase time="0.049" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="paperPublication">
     <error message="Field &apos;ID&apos; doesn&apos;t have a default value" type="org.hibernate.exception.GenericJDBCException">org.hibernate.exception.GenericJDBCException: Field &apos;ID&apos; doesn&apos;t have a default value
 	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:54)
 	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:125)
@@ -363,13 +363,13 @@ Caused by: java.sql.SQLException: Field &apos;ID&apos; doesn&apos;t have a defau
 	at org.hibernate.engine.jdbc.internal.proxy.AbstractStatementProxyHandler.continueInvocation(AbstractStatementProxyHandler.java:122)
 	... 49 more
 </error>
-    <system-out>21:04:52,630 DEBUG GenericHibernateDAO:84 - save: Paper
-21:04:52,631 DEBUG GenericHibernateDAO:98 - flush
-21:04:52,632 DEBUG SQL:104 - insert into PAPER (VERSION, DOI, ABSTRACT, CUSTOM_RANKING, PUB_ENTRY_DATE, KEYWORDS, PUBLIC, RANKING_ID, TITLE, SUBMITTED_BY_USER_ID, USER_TAGS, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-21:04:52,637 DEBUG SQL:104 - INSERT INTO publisher (VERSION, NAME, RANKING_ID) VALUES(?, ?, ?)
-21:04:52,638  WARN SqlExceptionHelper:143 - SQL Error: 1364, SQLState: HY000
-21:04:52,638 ERROR SqlExceptionHelper:144 - Field &apos;ID&apos; doesn&apos;t have a default value
+    <system-out>21:37:36,314 DEBUG GenericHibernateDAO:84 - save: Paper
+21:37:36,314 DEBUG GenericHibernateDAO:98 - flush
+21:37:36,315 DEBUG SQL:104 - insert into PAPER (VERSION, DOI, ABSTRACT, CUSTOM_RANKING, PUB_ENTRY_DATE, KEYWORDS, PUBLIC, RANKING_ID, TITLE, SUBMITTED_BY_USER_ID, USER_TAGS, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+21:37:36,323 DEBUG SQL:104 - INSERT INTO publisher (VERSION, NAME, RANKING_ID) VALUES(?, ?, ?)
+21:37:36,323  WARN SqlExceptionHelper:143 - SQL Error: 1364, SQLState: HY000
+21:37:36,324 ERROR SqlExceptionHelper:144 - Field &apos;ID&apos; doesn&apos;t have a default value
 </system-out>
   </testcase>
-  <testcase time="0.108" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="relatedPapers"/>
+  <testcase time="0.066" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper" name="relatedPapers"/>
 </testsuite>

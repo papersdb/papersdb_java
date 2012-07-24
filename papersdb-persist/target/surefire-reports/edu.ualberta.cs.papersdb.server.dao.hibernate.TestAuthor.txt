@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 Test set: edu.ualberta.cs.papersdb.server.dao.hibernate.TestAuthor
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.217 sec <<< FAILURE!
+Tests run: 4, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.198 sec <<< FAILURE!
 getByFamilyNames(edu.ualberta.cs.papersdb.server.dao.hibernate.TestAuthor)  Time elapsed: 0.043 sec  <<< ERROR!
 java.util.NoSuchElementException
 	at java.util.HashMap$HashIterator.nextEntry(HashMap.java:796)

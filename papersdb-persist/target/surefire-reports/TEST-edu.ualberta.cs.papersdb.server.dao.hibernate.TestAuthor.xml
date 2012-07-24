@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="0.217" errors="1" skipped="0" tests="4" name="edu.ualberta.cs.papersdb.server.dao.hibernate.TestAuthor">
+<testsuite failures="0" time="0.197" errors="1" skipped="0" tests="4" name="edu.ualberta.cs.papersdb.server.dao.hibernate.TestAuthor">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/jdk1.6.0_32/jre/lib/amd64"/>
@@ -56,7 +56,7 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="0.072" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestAuthor" name="create"/>
+  <testcase time="0.063" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestAuthor" name="create"/>
   <testcase time="0.043" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestAuthor" name="getByFamilyNames">
     <error type="java.util.NoSuchElementException">java.util.NoSuchElementException
 	at java.util.HashMap$HashIterator.nextEntry(HashMap.java:796)
@@ -112,16 +112,16 @@
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
 </error>
-    <system-out>21:04:52,864 DEBUG GenericHibernateDAO:84 - save: Author
-21:04:52,865 DEBUG PaperDAOHibernateImpl:33 - getByFamilyName: getByFamilyNames-109364648
-21:04:52,865 DEBUG GenericHibernateDAO:68 - getByExample: Author
-21:04:52,866 DEBUG SQL:104 - insert into AUTHOR (VERSION, EMAIL, FAMILY_NAMES, GIVEN_NAMES, TITLE, ID) values (?, ?, ?, ?, ?, ?)
-21:04:52,867 DEBUG SQL:104 - select this_.ID as ID3_0_, this_.VERSION as VERSION3_0_, this_.EMAIL as EMAIL3_0_, this_.FAMILY_NAMES as FAMILY4_3_0_, this_.GIVEN_NAMES as GIVEN5_3_0_, this_.TITLE as TITLE3_0_ from AUTHOR this_ where (this_.FAMILY_NAMES=?)
-21:04:52,868 DEBUG PaperDAOHibernateImpl:33 - getByFamilyName: 1027147994359013357165409800592217575532
-21:04:52,868 DEBUG GenericHibernateDAO:68 - getByExample: Author
-21:04:52,868 DEBUG SQL:104 - select this_.ID as ID3_0_, this_.VERSION as VERSION3_0_, this_.EMAIL as EMAIL3_0_, this_.FAMILY_NAMES as FAMILY4_3_0_, this_.GIVEN_NAMES as GIVEN5_3_0_, this_.TITLE as TITLE3_0_ from AUTHOR this_ where (this_.FAMILY_NAMES=?)
+    <system-out>21:37:36,499 DEBUG GenericHibernateDAO:84 - save: Author
+21:37:36,500 DEBUG PaperDAOHibernateImpl:33 - getByFamilyName: getByFamilyNames-1087632098
+21:37:36,500 DEBUG GenericHibernateDAO:68 - getByExample: Author
+21:37:36,502 DEBUG SQL:104 - insert into AUTHOR (VERSION, EMAIL, FAMILY_NAMES, GIVEN_NAMES, TITLE, ID) values (?, ?, ?, ?, ?, ?)
+21:37:36,502 DEBUG SQL:104 - select this_.ID as ID3_0_, this_.VERSION as VERSION3_0_, this_.EMAIL as EMAIL3_0_, this_.FAMILY_NAMES as FAMILY4_3_0_, this_.GIVEN_NAMES as GIVEN5_3_0_, this_.TITLE as TITLE3_0_ from AUTHOR this_ where (this_.FAMILY_NAMES=?)
+21:37:36,504 DEBUG PaperDAOHibernateImpl:33 - getByFamilyName: 1130742281745741467265812005344933682654
+21:37:36,504 DEBUG GenericHibernateDAO:68 - getByExample: Author
+21:37:36,505 DEBUG SQL:104 - select this_.ID as ID3_0_, this_.VERSION as VERSION3_0_, this_.EMAIL as EMAIL3_0_, this_.FAMILY_NAMES as FAMILY4_3_0_, this_.GIVEN_NAMES as GIVEN5_3_0_, this_.TITLE as TITLE3_0_ from AUTHOR this_ where (this_.FAMILY_NAMES=?)
 </system-out>
   </testcase>
-  <testcase time="0.051" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestAuthor" name="getMatchingFamilyName"/>
-  <testcase time="0.051" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestAuthor" name="getByEmail"/>
+  <testcase time="0.049" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestAuthor" name="getMatchingFamilyName"/>
+  <testcase time="0.042" classname="edu.ualberta.cs.papersdb.server.dao.hibernate.TestAuthor" name="getByEmail"/>
 </testsuite>

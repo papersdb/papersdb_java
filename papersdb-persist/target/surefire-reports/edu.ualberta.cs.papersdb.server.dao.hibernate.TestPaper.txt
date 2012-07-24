@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper
 -------------------------------------------------------------------------------
-Tests run: 11, Failures: 3, Errors: 2, Skipped: 0, Time elapsed: 2.313 sec <<< FAILURE!
-create(edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper)  Time elapsed: 0.058 sec  <<< FAILURE!
+Tests run: 11, Failures: 3, Errors: 2, Skipped: 0, Time elapsed: 2.256 sec <<< FAILURE!
+create(edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper)  Time elapsed: 0.063 sec  <<< FAILURE!
 junit.framework.AssertionFailedError: no exception when saving without a title
 	at junit.framework.Assert.fail(Assert.java:50)
 	at edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper.create(TestPaper.java:82)
@@ -43,10 +43,10 @@ junit.framework.AssertionFailedError: no exception when saving without a title
 	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:175)
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
-saveDuplicateTitle(edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper)  Time elapsed: 0.05 sec  <<< FAILURE!
+saveDuplicateTitle(edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper)  Time elapsed: 0.042 sec  <<< FAILURE!
 junit.framework.AssertionFailedError: no exception when saving new paper with existing title
 	at junit.framework.Assert.fail(Assert.java:50)
-	at edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper.saveDuplicateTitle(TestPaper.java:103)
+	at edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper.saveDuplicateTitle(TestPaper.java:102)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
@@ -84,7 +84,7 @@ junit.framework.AssertionFailedError: no exception when saving new paper with ex
 	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:175)
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
-saveDuplicateDOI(edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper)  Time elapsed: 0.043 sec  <<< FAILURE!
+saveDuplicateDOI(edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper)  Time elapsed: 0.042 sec  <<< FAILURE!
 junit.framework.AssertionFailedError: no exception when saving new paper with existing DOI
 	at junit.framework.Assert.fail(Assert.java:50)
 	at edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper.saveDuplicateDOI(TestPaper.java:171)
@@ -125,7 +125,7 @@ junit.framework.AssertionFailedError: no exception when saving new paper with ex
 	at org.apache.maven.surefire.booter.SurefireStarter.invokeProvider(SurefireStarter.java:175)
 	at org.apache.maven.surefire.booter.SurefireStarter.runSuitesInProcessWhenForked(SurefireStarter.java:107)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:68)
-paperAuthors(edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper)  Time elapsed: 0.085 sec  <<< ERROR!
+paperAuthors(edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper)  Time elapsed: 0.077 sec  <<< ERROR!
 org.hibernate.exception.GenericJDBCException: Field 'ID' doesn't have a default value
 	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:54)
 	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:125)
@@ -196,7 +196,7 @@ Caused by: java.sql.SQLException: Field 'ID' doesn't have a default value
 	at java.lang.reflect.Method.invoke(Method.java:597)
 	at org.hibernate.engine.jdbc.internal.proxy.AbstractStatementProxyHandler.continueInvocation(AbstractStatementProxyHandler.java:122)
 	... 49 more
-paperPublication(edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper)  Time elapsed: 0.043 sec  <<< ERROR!
+paperPublication(edu.ualberta.cs.papersdb.server.dao.hibernate.TestPaper)  Time elapsed: 0.049 sec  <<< ERROR!
 org.hibernate.exception.GenericJDBCException: Field 'ID' doesn't have a default value
 	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:54)
 	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:125)
