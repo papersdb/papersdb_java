@@ -17,9 +17,7 @@
     <module>papersdb-model</module>
     <module>papersdb-persist</module>
     <module>papersdb-webapp</module>
-    <!--
     <module>papersdb-import</module>
-     -->
   </modules>
 
   <build>
