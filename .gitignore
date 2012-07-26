@@ -1,6 +1,3 @@
-papersdb-model/target
-papersdb-persist/log
-papersdb-persist/target
-papersdb-webapp/log
-papersdb-webapp/target
-
+/.metadata
+log
+target

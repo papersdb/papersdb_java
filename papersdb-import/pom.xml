@@ -16,9 +16,15 @@
   <dependencies>
     <dependency>
         <groupId>edu.ualberta.cs.papersdb</groupId>
-        <artifactId>papersdb-persist</artifactId>
+        <artifactId>papersdb-service</artifactId>
         <version>0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+        <groupId>commons-dbcp</groupId>
+        <artifactId>commons-dbcp</artifactId>
+        <version>1.2.2</version>
+    </dependency>
+            
   </dependencies>
   
   <build>
