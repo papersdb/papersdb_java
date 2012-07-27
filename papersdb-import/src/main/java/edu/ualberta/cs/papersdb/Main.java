@@ -1,110 +1,118 @@
 package edu.ualberta.cs.papersdb;
 
-import java.util.Properties;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
 
-import javax.sql.DataSource;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 
-import org.apache.log4j.PropertyConfigurator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.dao.support.PersistenceExceptionTranslator;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate4.HibernateExceptionTranslator;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import edu.ualberta.cs.papersdb.SessionProvider.Mode;
+import edu.ualberta.cs.papersdb.model.Paper;
+import edu.ualberta.cs.papersdb.model.User;
 
-import edu.ualberta.cs.papersdb.service.PapersdbService;
-
-@ComponentScan(basePackages = "edu.ualberta.cs.papersdb")
-@Configuration
-@PropertySource("classpath:jdbc.properties")
 @SuppressWarnings("nls")
 public class Main {
 
-    @Autowired
-    Environment env;
+    private final Connection bbpdbCon;
 
-    public static void main(String[] args) throws Exception {
-        // Configure Log4J
-        PropertyConfigurator.configure(Main.class.getClassLoader().getResource(
-            "log4j.properties"));
+    private final SessionProvider sessionProvider;
 
-        AnnotationConfigApplicationContext ctx =
-            new AnnotationConfigApplicationContext();
-        ctx.register(Main.class);
-        ctx.refresh();
+    private Session session;
 
-        final PapersdbService papersdbService =
-            ctx.getBean(PapersdbService.class);
-        papersdbService.test();
+    public static void main(String[] args) {
+        try {
+            new Main();
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    @Bean
-    public LocalSessionFactoryBean localSessionFactory() {
-        final LocalSessionFactoryBean sessionFactory =
-            new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(this.dataSource());
-        sessionFactory.setPackagesToScan("edu.ualberta.cs.papersdb.model");
-        sessionFactory.setHibernateProperties(this.hibernateProperties());
+    Main() throws Exception {
+        sessionProvider = new SessionProvider(Mode.DEBUG);
+        session = sessionProvider.openSession();
 
-        return sessionFactory;
+        bbpdbCon =
+            DriverManager.getConnection("jdbc:mysql://localhost:3306/pubDB",
+                "dummy", "ozzy498");
+
+        importUsers();
+        importPapers();
+
     }
 
-    @Bean
-    public DataSource dataSource() {
-        final DriverManagerDataSource dataSource =
-            new DriverManagerDataSource();
-        // dataSource.setDriverClassName(this.driverClassName);
-        dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
-        dataSource.setUrl(env.getProperty("jdbc.url"));
-        dataSource.setUsername("dummy");
-        dataSource.setPassword("ozzy498");
+    private void importUsers() throws Exception {
+        Number n = (Number) session.createCriteria(User.class)
+            .setProjection(Projections.rowCount()).uniqueResult();
 
-        return dataSource;
-    }
+        if (!n.equals(0L)) {
+            throw new ImportException("user table has already been populated");
+        }
 
-    @Bean
-    public HibernateTransactionManager transactionManager() {
-        final HibernateTransactionManager txManager =
-            new HibernateTransactionManager();
-        txManager.setSessionFactory(localSessionFactory().getObject());
+        final PreparedStatement ps =
+            bbpdbCon.prepareStatement("SELECT * FROM user");
 
-        return txManager;
-    }
+        Transaction tx = session.beginTransaction();
 
-    @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslationPostProcessor() {
-        return new PersistenceExceptionTranslationPostProcessor();
-    }
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            // skip users that have not been verified
+            if (rs.getInt("verified") == 0) continue;
 
-    @Bean
-    public PersistenceExceptionTranslator exceptionTranslator() {
-        return new HibernateExceptionTranslator();
-    }
+            User user = new User();
+            user.setVerified(rs.getBoolean("verified"));
+            user.setAccessLevel(rs.getInt("access_level"));
+            user.setEmail(rs.getString("email"));
+            user.setLogin(rs.getString("login"));
 
-    final Properties hibernateProperties() {
-        return new Properties() {
-            private static final long serialVersionUID = 1L;
-            {
-                put("persistence.dialect", env.getProperty("hibernate.dialect"));
-                put("hibernate.dialect", env.getProperty("hibernate.dialect"));
+            String[] names = rs.getString("name").split("\\s");
 
-                if (env.getProperty("hibernate.show_sql") != null) {
-                    put("hibernate.show_sql",
-                        new Boolean(env.getProperty("hibernate.show_sql")));
-                }
-
-                if (env.getProperty("hibernate.hbm2ddl.auto") != null) {
-                    put("hibernate.hbm2ddl.auto",
-                        env.getProperty("hibernate.hbm2ddl.auto"));
-                }
+            if (names.length == 0) {
+                throw new IllegalStateException("user name field empty: login="
+                    + rs.getInt("login"));
             }
-        };
+
+            user.setGivenNames(names[0]);
+
+            if (names.length > 1) {
+                String[] familyNames =
+                    Arrays.copyOfRange(names, 1, names.length);
+                user.setFamilyNames(StringUtils.join(familyNames));
+            }
+
+            session.save(user);
+        }
+
+        tx.commit();
+    }
+
+    private void importPapers() throws Exception {
+        Number n = (Number) session.createCriteria(User.class)
+            .setProjection(Projections.rowCount()).uniqueResult();
+
+        if (n.equals(0L)) {
+            throw new ImportException("user table has not been populated");
+        }
+
+        final PreparedStatement ps =
+            bbpdbCon.prepareStatement("SELECT * FROM publication");
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Paper paper = new Paper();
+            paper.setTitle(rs.getString("title"));
+            paper.setAbstract(rs.getString("abstract"));
+            paper.setKeywords(rs.getString("keywords"));
+            // paper.setUserSubmittedBy(rs.getString("keywords"));
+        }
+
     }
 }
