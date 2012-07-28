@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
@@ -15,6 +17,7 @@ import org.hibernate.criterion.Projections;
 import edu.ualberta.cs.papersdb.PapersdbSchemaExport;
 import edu.ualberta.cs.papersdb.SessionProvider;
 import edu.ualberta.cs.papersdb.SessionProvider.Mode;
+import edu.ualberta.cs.papersdb.model.Author;
 import edu.ualberta.cs.papersdb.model.Paper;
 import edu.ualberta.cs.papersdb.model.user.User;
 import edu.ualberta.cs.papersdb.model.user.UserAccessType;
@@ -53,12 +56,47 @@ public class Importer {
         sessionProvider = new SessionProvider(Mode.DEBUG);
         session = sessionProvider.openSession();
 
-        dbCon =
-            DriverManager.getConnection("jdbc:mysql://localhost:3306/pubDB",
-                "dummy", "ozzy498");
+        dbCon = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/pubDB", "dummy", "ozzy498");
+
+        fixErrorsInOldDb();
 
         importUsers();
+        importAuthors();
         importPapers();
+
+    }
+
+    private void fixErrorsInOldDb() throws SQLException {
+        PreparedStatement ps = dbCon.prepareStatement(
+            "SELECT count(*) FROM user WHERE name='PandoraLam'");
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        if (rs.getInt(1) == 1) {
+            ps = dbCon.prepareStatement(
+                "UPDATE user SET name='Pandora Lam' WHERE name='PandoraLam'");
+            ps.executeUpdate();
+        }
+
+        ps = dbCon.prepareStatement(
+            "SELECT count(*) FROM user WHERE name='idanis'");
+        rs = ps.executeQuery();
+        rs.next();
+        if (rs.getInt(1) == 1) {
+            ps = dbCon.prepareStatement(
+                "UPDATE user SET name='Idanis Diaz' WHERE name='idanis'");
+            ps.executeUpdate();
+        }
+
+        ps = dbCon.prepareStatement(
+            "SELECT count(*) FROM user WHERE name='nelson'");
+        rs = ps.executeQuery();
+        rs.next();
+        if (rs.getInt(1) == 1) {
+            ps = dbCon.prepareStatement(
+                "DELETE FROM user WHERE name='nelson'");
+            ps.executeUpdate();
+        }
 
     }
 
@@ -107,25 +145,55 @@ public class Importer {
 
             user.setAccessType(accessType);
 
-            String[] names = rs.getString("name").split("\\s");
-
-            if (names.length == 0) {
-                throw new IllegalStateException("user name field empty: login="
-                    + rs.getInt("login"));
-            }
-
-            user.setGivenNames(names[0]);
-
-            if (names.length > 1) {
-                String[] familyNames =
-                    Arrays.copyOfRange(names, 1, names.length);
-                user.setFamilyNames(StringUtils.join(familyNames));
+            List<String> splitNames = splitNames(rs.getString("name"));
+            user.setGivenNames(splitNames.get(0));
+            if (splitNames.size() > 1) {
+                user.setFamilyNames(splitNames.get(1));
             }
 
             session.save(user);
         }
 
         tx.commit();
+    }
+
+    private void importAuthors() throws Exception {
+        Number n = (Number) session.createCriteria(Author.class)
+            .setProjection(Projections.rowCount()).uniqueResult();
+
+        if (!n.equals(0L)) {
+            throw new ImportException("author table has already been populated");
+        }
+
+        Transaction tx = session.beginTransaction();
+
+        PreparedStatement ps = dbCon.prepareStatement("SELECT * FROM author");
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Author author = new Author();
+            author.setTitle(rs.getString("title"));
+
+            String names = rs.getString("name");
+            String email = rs.getString("email");
+
+            if ((email != null)
+                && !email.isEmpty()
+                && !(email.equals("steve@cs.ualberta.ca") && names
+                    .equals("Lake, Robert"))) {
+                author.setEmail(email);
+            }
+
+            List<String> splitNames = splitNames(names);
+            author.setGivenNames(splitNames.get(0));
+            if (splitNames.size() > 1) {
+                author.setFamilyNames(splitNames.get(1));
+            }
+
+            session.save(author);
+        }
+
+        tx.commit();
+
     }
 
     private void importPapers() throws Exception {
@@ -147,5 +215,50 @@ public class Importer {
             // paper.setUserSubmittedBy(rs.getString("keywords"));
         }
 
+    }
+
+    /*
+     * Accepts two formats:
+     * 
+     * 1) Delimited by comma: last name is before comma, first name after
+     * 
+     * 2) Delimited by only spaces: first name is all text up to first space,
+     * last name is everything after
+     */
+    private List<String> splitNames(String names) {
+        List<String> result = new ArrayList<String>();
+        String[] splitNames;
+
+        if (names.contains(",")) {
+            splitNames = names.split(",");
+        } else {
+            splitNames = names.split("\\s");
+        }
+
+        if (splitNames.length == 0) {
+            throw new IllegalStateException("name cannot be split: names="
+                + names);
+        }
+
+        if (names.contains(",")) {
+            if (splitNames.length == 2) {
+                result.add(splitNames[1].trim());
+                result.add(splitNames[0].trim());
+            }
+
+        } else {
+            result.add(splitNames[0]);
+
+            if (splitNames.length > 1) {
+                String[] familyNames =
+                    Arrays.copyOfRange(splitNames, 1, splitNames.length);
+                result.add(StringUtils.join(familyNames));
+            } else {
+                throw new IllegalStateException("no last name found in name: "
+                    + names);
+            }
+        }
+
+        return result;
     }
 }

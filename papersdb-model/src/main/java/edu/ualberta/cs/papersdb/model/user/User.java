@@ -26,6 +26,7 @@ public class User extends AbstractPapersdbModel {
     private String password;
     private String login;
     private Date lastLogin;
+    private Date registrationDate;
     private String email;
     private String familyNames;
     private String givenNames;
@@ -112,6 +113,15 @@ public class User extends AbstractPapersdbModel {
 
     public void setPapers(Set<Paper> papers) {
         this.papers = papers;
+    }
+
+    @Column(name = "REGISTRATION_DATE")
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
     }
 
 }
