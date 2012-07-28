@@ -1,4 +1,4 @@
-package edu.ualberta.cs.papersdb;
+package edu.ualberta.cs.papersdb.importer;
 
 public class ImportException extends RuntimeException {
     private static final long serialVersionUID = 1L;

@@ -1,5 +1,6 @@
-package edu.ualberta.cs.papersdb.model;
+package edu.ualberta.cs.papersdb.model.user;
 
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,19 +13,51 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import edu.ualberta.cs.papersdb.model.AbstractPapersdbModel;
+import edu.ualberta.cs.papersdb.model.Paper;
+
 @Entity
 @Table(name = "USER")
 public class User extends AbstractPapersdbModel {
     private static final long serialVersionUID = 1L;
 
-    boolean isVerified = false;
-    int accessLevel = 0;
-    String email;
-    String familyNames;
-    String givenNames;
-    String login;
-    String password;
+    private boolean isVerified = false;
+    private UserAccessType accessType = UserAccessType.UNVERIFIED_USER;
+    private String password;
+    private String login;
+    private Date lastLogin;
+    private String email;
+    private String familyNames;
+    private String givenNames;
     private Set<Paper> papers = new HashSet<Paper>(0);
+
+    @NotEmpty(message = "{edu.ualberta.med.biobank.model.User.login.NotEmpty}")
+    @Column(name = "LOGIN", unique = true)
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    @Column(name = "LAST_LOGIN")
+    public Date getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    @Column(name = "PASSWORD")
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Column(name = "IS_VERIFIED")
     public boolean isVerified() {
@@ -35,13 +68,13 @@ public class User extends AbstractPapersdbModel {
         this.isVerified = isVerified;
     }
 
-    @Column(name = "ACCESS_LEVEL")
-    public int getAccessLevel() {
-        return accessLevel;
+    @Column(name = "ACCESS_TYPE")
+    public UserAccessType getAccessType() {
+        return accessType;
     }
 
-    public void setAccessLevel(int accessLevel) {
-        this.accessLevel = accessLevel;
+    public void setAccessType(UserAccessType accessType) {
+        this.accessType = accessType;
     }
 
     @Column(name = "EMAIL", unique = true)
@@ -69,25 +102,6 @@ public class User extends AbstractPapersdbModel {
 
     public void setGivenNames(String givenNames) {
         this.givenNames = givenNames;
-    }
-
-    @NotEmpty(message = "{edu.ualberta.med.biobank.model.User.login.NotEmpty}")
-    @Column(name = "LOGIN", unique = true)
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    @Column(name = "PASSWORD")
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "userSubmittedBy")

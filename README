@@ -1,0 +1,4 @@
+TO CREATE THE MYSQL SCHEMA
+   cd papersdb-schema/
+   mvn assembly:assembly
+  java -cp target/papersdb-schema-jar-with-dependencies.jar edu.ualberta.cs.papersdb.PapersdbSchemaExport

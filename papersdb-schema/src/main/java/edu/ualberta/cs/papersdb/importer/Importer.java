@@ -1,4 +1,4 @@
-package edu.ualberta.cs.papersdb;
+package edu.ualberta.cs.papersdb.importer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,14 +12,23 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
 
+import edu.ualberta.cs.papersdb.PapersdbSchemaExport;
+import edu.ualberta.cs.papersdb.SessionProvider;
 import edu.ualberta.cs.papersdb.SessionProvider.Mode;
 import edu.ualberta.cs.papersdb.model.Paper;
-import edu.ualberta.cs.papersdb.model.User;
+import edu.ualberta.cs.papersdb.model.user.User;
+import edu.ualberta.cs.papersdb.model.user.UserAccessType;
 
+/**
+ * Imports the data from php version of PapersdDB to this new one.
+ * 
+ * @author nelson
+ * 
+ */
 @SuppressWarnings("nls")
-public class Main {
+public class Importer {
 
-    private final Connection bbpdbCon;
+    private final Connection dbCon;
 
     private final SessionProvider sessionProvider;
 
@@ -27,7 +36,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            new Main();
+            new Importer();
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
@@ -37,11 +46,14 @@ public class Main {
         }
     }
 
-    Main() throws Exception {
+    Importer() throws Exception {
+        // drop all tables and create a new database schema
+        new PapersdbSchemaExport();
+
         sessionProvider = new SessionProvider(Mode.DEBUG);
         session = sessionProvider.openSession();
 
-        bbpdbCon =
+        dbCon =
             DriverManager.getConnection("jdbc:mysql://localhost:3306/pubDB",
                 "dummy", "ozzy498");
 
@@ -59,7 +71,7 @@ public class Main {
         }
 
         final PreparedStatement ps =
-            bbpdbCon.prepareStatement("SELECT * FROM user");
+            dbCon.prepareStatement("SELECT * FROM user");
 
         Transaction tx = session.beginTransaction();
 
@@ -70,9 +82,30 @@ public class Main {
 
             User user = new User();
             user.setVerified(rs.getBoolean("verified"));
-            user.setAccessLevel(rs.getInt("access_level"));
             user.setEmail(rs.getString("email"));
             user.setLogin(rs.getString("login"));
+
+            UserAccessType accessType = UserAccessType.UNVERIFIED_USER;
+
+            int accessLevel = rs.getInt("access_level");
+
+            switch (accessLevel) {
+            case 0:
+                break;
+            case 1:
+                accessType = UserAccessType.EDITOR;
+                break;
+            case 2:
+                accessType = UserAccessType.ADMINISTRATOR;
+                break;
+            default:
+                throw new IllegalStateException(
+                    "user has invalid access level: login="
+                        + rs.getInt("login") + " access_level=" + accessLevel);
+
+            }
+
+            user.setAccessType(accessType);
 
             String[] names = rs.getString("name").split("\\s");
 
@@ -104,7 +137,7 @@ public class Main {
         }
 
         final PreparedStatement ps =
-            bbpdbCon.prepareStatement("SELECT * FROM publication");
+            dbCon.prepareStatement("SELECT * FROM publication");
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             Paper paper = new Paper();

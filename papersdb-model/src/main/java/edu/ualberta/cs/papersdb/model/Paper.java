@@ -30,6 +30,7 @@ import org.hibernate.annotations.SortType;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import edu.ualberta.cs.papersdb.model.publication.Publication;
+import edu.ualberta.cs.papersdb.model.user.User;
 
 @Entity
 @Table(name = "PAPER")

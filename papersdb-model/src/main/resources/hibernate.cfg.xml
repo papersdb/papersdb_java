@@ -6,13 +6,13 @@
     <session-factory>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/papersdb</property>
-        <property name="hibernate.connection.password">ozzy498</property>
         <property name="hibernate.connection.username">dummy</property>
+        <property name="hibernate.connection.password">ozzy498</property>
     <!-- 
         <property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>
         <property name="hibernate.connection.url">jdbc:hsqldb:mem:papersdb</property>
-        <property name="hibernate.connection.password">ozzy498</property>
         <property name="hibernate.connection.username">dummy</property>
+        <property name="hibernate.connection.password">ozzy498</property>
     -->
     
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
@@ -24,7 +24,7 @@
         <mapping package="edu.ualberta.cs.papersdb.model" />
 
         <!-- Mapped classes -->
-        <mapping class="edu.ualberta.cs.papersdb.model.User" />
+        <mapping class="edu.ualberta.cs.papersdb.model.user.User" />
         <mapping class="edu.ualberta.cs.papersdb.model.Paper" />
         <mapping class="edu.ualberta.cs.papersdb.model.Author" />
         <mapping class="edu.ualberta.cs.papersdb.model.AuthorRanked" />
