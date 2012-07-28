@@ -7,6 +7,9 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -14,6 +17,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import edu.ualberta.cs.papersdb.model.AbstractPapersdbModel;
+import edu.ualberta.cs.papersdb.model.Author;
 import edu.ualberta.cs.papersdb.model.Paper;
 
 @Entity
@@ -30,6 +34,7 @@ public class User extends AbstractPapersdbModel {
     private String email;
     private String familyNames;
     private String givenNames;
+    private Set<Author> collaborators = new HashSet<Author>(0);
     private Set<Paper> papers = new HashSet<Paper>(0);
 
     @NotEmpty(message = "{edu.ualberta.med.biobank.model.User.login.NotEmpty}")
@@ -122,6 +127,20 @@ public class User extends AbstractPapersdbModel {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "USER_AUTHOR",
+        joinColumns = { @JoinColumn(name = "USER_ID",
+            nullable = false, updatable = false) },
+        inverseJoinColumns = { @JoinColumn(name = "AUTHOR_ID",
+            nullable = false, updatable = false) })
+    public Set<Author> getCollaborators() {
+        return collaborators;
+    }
+
+    public void setCollaborators(Set<Author> collaborators) {
+        this.collaborators = collaborators;
     }
 
 }

@@ -10,9 +10,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 
 import edu.ualberta.cs.papersdb.PapersdbSchemaExport;
 import edu.ualberta.cs.papersdb.SessionProvider;
@@ -192,6 +194,30 @@ public class Importer {
             session.save(author);
         }
 
+        User user;
+        Author author;
+        ps = dbCon.prepareStatement("SELECT * FROM user_author ua "
+            + "JOIN author ON author.author_id=ua.author_id "
+            + "JOIN user on user.login=ua.login");
+        rs = ps.executeQuery();
+        while (rs.next()) {
+            String login = rs.getString("login");
+            user = getUserByLogin(session, login);
+            if (user == null) {
+                throw new ImportException("user not found: login=" + login);
+            }
+
+            List<String> names = splitNames(rs.getString("name"));
+            author = getAuthorByName(session, names.get(0), names.get(1));
+            if (author == null) {
+                throw new ImportException("author not found: names="
+                    + names.get(0) + " " + names.get(1));
+            }
+
+            user.getCollaborators().add(author);
+            session.save(user);
+        }
+
         tx.commit();
 
     }
@@ -260,5 +286,29 @@ public class Importer {
         }
 
         return result;
+    }
+
+    public static User getUserByLogin(Session session, String login) {
+        if (session == null) {
+            throw new NullPointerException("session is null");
+        }
+
+        Criteria c = session.createCriteria(User.class, "u")
+            .add(Restrictions.eq("login", login));
+
+        return (User) c.uniqueResult();
+    }
+
+    public static Author getAuthorByName(Session session, String givenNames,
+        String familyNames) {
+        if (session == null) {
+            throw new NullPointerException("session is null");
+        }
+
+        Criteria c = session.createCriteria(Author.class, "u")
+            .add(Restrictions.eq("givenNames", givenNames))
+            .add(Restrictions.eq("familyNames", familyNames));
+
+        return (Author) c.uniqueResult();
     }
 }
