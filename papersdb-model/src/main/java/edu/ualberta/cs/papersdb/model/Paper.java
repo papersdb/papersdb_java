@@ -23,8 +23,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Null;
 
+import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -33,14 +35,19 @@ import edu.ualberta.cs.papersdb.model.publication.Publication;
 import edu.ualberta.cs.papersdb.model.user.User;
 
 @Entity
-@Table(name = "PAPER")
+@Table(name = "PAPER",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "TITLE", "PUBLICATION_ID" }) })
 public class Paper extends AbstractPapersdbModel {
     private static final long serialVersionUID = 1L;
 
     private String title;
     private String pubAbstract;
     private String keywords;
-    private Date date;
+    private String extraInformation;
+    private Date paperDate;
+    private Date dbInsertDate;
+    private Date dbUpdateDate;
     private User userSubmittedBy;
     private String userTags;
     private Ranking ranking;
@@ -55,7 +62,7 @@ public class Paper extends AbstractPapersdbModel {
     private Set<String> attachments = new HashSet<String>(0);
 
     @NotEmpty(message = "{edu.ualberta.cs.papersDb.model.Paper.title.NotEmpty}")
-    @Column(name = "TITLE", length = 500, unique = true, nullable = false)
+    @Column(name = "TITLE", length = 500, nullable = false)
     public String getTitle() {
         return title;
     }
@@ -82,14 +89,43 @@ public class Paper extends AbstractPapersdbModel {
         this.keywords = keywords;
     }
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "PUB_ENTRY_DATE")
-    public Date getDate() {
-        return date;
+    @Column(name = "EXTRA_INFORMATION", columnDefinition = "TEXT")
+    public String getExtraInformation() {
+        return extraInformation;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setExtraInformation(String extraInformation) {
+        this.extraInformation = extraInformation;
+    }
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "PAPER_DATE")
+    public Date getPaperDate() {
+        return paperDate;
+    }
+
+    public void setPaperDate(Date date) {
+        this.paperDate = date;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "DB_INSERT_DATE")
+    public Date getDbInsertDate() {
+        return dbInsertDate;
+    }
+
+    public void setDbInsertDate(Date insertDate) {
+        this.dbInsertDate = insertDate;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "DB_UPDATE_DATE")
+    public Date getDbUpdateDate() {
+        return dbUpdateDate;
+    }
+
+    public void setDbUpdateDate(Date updateDate) {
+        this.dbUpdateDate = updateDate;
     }
 
     @Null(message = "{edu.ualberta.cs.papersdb.model.Paper.userSubmittedBy.NotNull}")
@@ -176,7 +212,9 @@ public class Paper extends AbstractPapersdbModel {
         this.authors = authors;
     }
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "paper", orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL)
+    @ForeignKey(name = "FK_PAPER_PUBLICATION")
+    @JoinColumn(name = "PUBLICATION_ID", nullable = true)
     public Publication getPublication() {
         return publication;
     }

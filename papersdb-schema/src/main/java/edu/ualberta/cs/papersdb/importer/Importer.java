@@ -100,6 +100,10 @@ public class Importer {
             ps.executeUpdate();
         }
 
+        ps = dbCon.prepareStatement(
+            "UPDATE publication SET updated=null WHERE updated='0000-00-00'");
+        ps.executeUpdate();
+
     }
 
     private void importUsers() throws Exception {
@@ -230,17 +234,34 @@ public class Importer {
             throw new ImportException("user table has not been populated");
         }
 
+        Transaction tx = session.beginTransaction();
+
         final PreparedStatement ps =
             dbCon.prepareStatement("SELECT * FROM publication");
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             Paper paper = new Paper();
             paper.setTitle(rs.getString("title"));
-            paper.setAbstract(rs.getString("abstract"));
             paper.setKeywords(rs.getString("keywords"));
-            // paper.setUserSubmittedBy(rs.getString("keywords"));
+            paper.setPaperDate(rs.getDate("published"));
+            paper.setDbUpdateDate(rs.getDate("updated"));
+            // paper.set(rs.getString(""));
+
+            byte[] abstractBytes = rs.getBytes("abstract");
+
+            if ((abstractBytes != null) && (abstractBytes.length > 0)) {
+                paper.setAbstract(new String(abstractBytes, "UTF-8"));
+            }
+
+            byte[] extraInfoBytes = rs.getBytes("extra_info");
+
+            if ((extraInfoBytes != null) && (extraInfoBytes.length > 0)) {
+                paper.setExtraInformation(new String(extraInfoBytes, "UTF-8"));
+            }
+            session.save(paper);
         }
 
+        tx.commit();
     }
 
     /*

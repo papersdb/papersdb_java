@@ -67,9 +67,7 @@ public abstract class Publication extends AbstractPapersdbModel {
     }
 
     @NotNull(message = "{edu.ualberta.cs.papersDb.model.Publication.paper.NotEmpty}")
-    @OneToOne(cascade = CascadeType.ALL)
-    @ForeignKey(name = "FK_PUBLICATION_PAPER")
-    @JoinColumn(name = "PAPER_ID", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "publication", orphanRemoval = true)
     public Paper getPaper() {
         return paper;
     }

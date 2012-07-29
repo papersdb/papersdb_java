@@ -1,6 +1,6 @@
 package edu.ualberta.cs.papersdb.model.user;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +12,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -29,7 +31,7 @@ public class User extends AbstractPapersdbModel {
     private UserAccessType accessType = UserAccessType.UNVERIFIED_USER;
     private String password;
     private String login;
-    private Date lastLogin;
+    private Date lastLoginDate;
     private Date registrationDate;
     private String email;
     private String familyNames;
@@ -47,13 +49,24 @@ public class User extends AbstractPapersdbModel {
         this.login = login;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LAST_LOGIN")
     public Date getLastLogin() {
-        return lastLogin;
+        return lastLoginDate;
     }
 
     public void setLastLogin(Date lastLogin) {
-        this.lastLogin = lastLogin;
+        this.lastLoginDate = lastLogin;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "REGISTRATION_DATE")
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
     }
 
     @Column(name = "PASSWORD")
@@ -118,15 +131,6 @@ public class User extends AbstractPapersdbModel {
 
     public void setPapers(Set<Paper> papers) {
         this.papers = papers;
-    }
-
-    @Column(name = "REGISTRATION_DATE")
-    public Date getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
     }
 
     @ManyToMany(fetch = FetchType.LAZY)
