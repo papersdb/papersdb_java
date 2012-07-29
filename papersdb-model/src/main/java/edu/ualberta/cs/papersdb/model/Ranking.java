@@ -9,7 +9,8 @@ public enum Ranking implements Serializable {
     TOP_TIER(1),
     SECOND_TIER(2),
     REFEREED(3),
-    UNREFEREED(4);
+    UNREFEREED(4),
+    OTHER(5);
 
     private static final List<Ranking> VALUES_LIST =
         Collections.unmodifiableList(Arrays.asList(values()));

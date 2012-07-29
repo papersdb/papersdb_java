@@ -149,7 +149,6 @@ public class Paper extends AbstractPapersdbModel {
     }
 
     @Column(name = "RANKING_ID")
-    @Enumerated(EnumType.STRING)
     public Ranking getRanking() {
         return ranking;
     }

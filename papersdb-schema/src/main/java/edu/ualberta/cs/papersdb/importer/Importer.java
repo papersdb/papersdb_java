@@ -236,8 +236,8 @@ public class Importer {
 
         Transaction tx = session.beginTransaction();
 
-        final PreparedStatement ps =
-            dbCon.prepareStatement("SELECT * FROM publication");
+        PreparedStatement ps =
+            dbCon.prepareStatement("SELECT * FROM publication pub");
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             Paper paper = new Paper();
@@ -259,6 +259,13 @@ public class Importer {
                 paper.setExtraInformation(new String(extraInfoBytes, "UTF-8"));
             }
             session.save(paper);
+        }
+
+        ps = dbCon.prepareStatement("SELECT * FROM publication pub "
+            + "JOIN pub_rankings pr ON pr.pub_id=pub.pub_id ");
+        rs = ps.executeQuery();
+        while (rs.next()) {
+
         }
 
         tx.commit();

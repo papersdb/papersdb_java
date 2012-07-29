@@ -5,8 +5,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -34,8 +32,6 @@ public class Publisher extends AbstractPapersdbModel {
     }
 
     @Column(name = "RANKING_ID")
-    @Enumerated(EnumType.STRING)
-    // @Type(type = "ranking")
     public Ranking getRanking() {
         return ranking;
     }

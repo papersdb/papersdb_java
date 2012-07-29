@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -23,7 +24,9 @@ import edu.ualberta.cs.papersdb.model.Author;
 import edu.ualberta.cs.papersdb.model.Paper;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "USER",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "GIVEN_NAMES", "FAMILY_NAMES" }) })
 public class User extends AbstractPapersdbModel {
     private static final long serialVersionUID = 1L;
 
