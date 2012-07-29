@@ -10,6 +10,8 @@ UPDATE author SET email=null WHERE `name`='Lake, Robert';
 
 DELETE ua FROM user_author ua LEFT JOIN `user` ON user.login=ua.login WHERE user.login is null;
 
+DELETE pa FROM pub_author pa LEFT JOIN publication pub ON pub.pub_id=pa.pub_id WHERE pub.pub_id is null;
+
 DELETE FROM user WHERE verified=0;
 
 --
@@ -74,7 +76,6 @@ ALTER TABLE user_author ENGINE=InnoDB;
 ALTER TABLE user_author
       ADD COLUMN USER_ID BIGINT(20) COMMENT '' NOT NULL,
       MODIFY COLUMN AUTHOR_ID BIGINT(20) COMMENT '' NOT NULL;
-
 UPDATE user_author,`user` SET user_id=user.id WHERE user.login=user_author.login;
 
 ALTER TABLE user_author
@@ -129,6 +130,11 @@ ALTER TABLE paper
 ALTER TABLE paper
       ADD CONSTRAINT FK486196CC5699AAF FOREIGN KEY (SUBMITTED_BY_USER_ID)
           REFERENCES user (ID) ON UPDATE NO ACTION ON DELETE NO ACTION;
+UPDATE paper,pub_rankings pr
+       SET custom_ranking=pr.description
+       WHERE pr.pub_id is not null AND paper.id=pr.pub_id;
+
+DROP TABLE pub_rankings;
 
 CREATE TABLE paper_attachment (
     PAPER_ID BIGINT(20) NOT NULL,
@@ -207,25 +213,36 @@ INSERT INTO paper_collaboration (PAPER_ID, COLLABORATION_ID)
 
 
 DROP TABLE collaboration;
+DROP TABLE pub_col;
+
+--
+
+ALTER TABLE pub_author ENGINE=InnoDB;
+RENAME TABLE pub_author TO author_ranked;
+
+ALTER TABLE `author_ranked` DROP PRIMARY KEY,
+      ADD COLUMN `ID` bigint(20) NOT NULL auto_increment FIRST,
+      ADD PRIMARY KEY (`ID`) USING BTREE;
+
+ALTER TABLE `author_ranked`
+    ADD COLUMN VERSION INT(11) NOT NULL AFTER `ID`,
+    CHANGE COLUMN `rank` RANK INT(11) NULL DEFAULT NULL,
+    CHANGE COLUMN `author_id` AUTHOR_ID BIGINT(20) NOT NULL,
+    CHANGE COLUMN `pub_id` PAPER_ID BIGINT(20) NULL NOT NULL,
+    ADD INDEX FK_AUTHOR_RANKED_AUTHOR (AUTHOR_ID),
+    ADD INDEX FK_AUTHOR_RANKED_PAPER (PAPER_ID);
+
+ALTER TABLE author_ranked
+      ADD CONSTRAINT FK_AUTHOR_RANKED_PAPER FOREIGN KEY (PAPER_ID)
+          REFERENCES paper (ID) ON UPDATE NO ACTION ON DELETE NO ACTION,
+      ADD CONSTRAINT FK_AUTHOR_RANKED_AUTHOR FOREIGN KEY (AUTHOR_ID)
+          REFERENCES author (ID) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+ALTER TABLE user MODIFY COLUMN ID BIGINT(20) NOT NULL;
+
+--
 
 \q
-
---
-
-CREATE TABLE author_ranked (
-    ID BIGINT(20) NOT NULL,
-    VERSION INT(11) NOT NULL,
-    RANK INT(11) NULL DEFAULT NULL,
-    AUTHOR_ID BIGINT(20) NOT NULL,
-    PAPER_ID BIGINT(20) NULL DEFAULT NULL,
-    INDEX FK_AUTHOR_RANKED_AUTHOR (AUTHOR_ID),
-    INDEX FK_AUTHOR_RANKED_PAPER (PAPER_ID),
-    PRIMARY KEY (ID)
-) ENGINE=InnoDB COLLATE=latin1_swedish_ci;
-
-ALTER TABLE author_ranked ADD CONSTRAINT FK_AUTHOR_RANKED_PAPER FOREIGN KEY (PAPER_ID) REFERENCES paper (ID) ON UPDATE NO ACTION ON DELETE NO ACTION,
-      ADD CONSTRAINT FK_AUTHOR_RANKED_AUTHOR FOREIGN KEY (AUTHOR_ID) REFERENCES author (ID) ON UPDATE NO ACTION ON DELETE NO ACTION;
---
 
 ALTER TABLE paper
       ADD CONSTRAINT FK_PAPER_PUBLICATION FOREIGN KEY (PUBLICATION_ID)
@@ -241,12 +258,9 @@ DROP TABLE extra_info;
 DROP TABLE help_fields;
 DROP TABLE info;
 DROP TABLE interest;
-DROP TABLE pub_author;
 DROP TABLE pub_cat;
 DROP TABLE pub_cat_info;
-DROP TABLE pub_col;
 DROP TABLE pub_pending;
-DROP TABLE pub_rankings;
 DROP TABLE pub_valid;
 DROP TABLE tag_ml_history;
 DROP TABLE venue;
