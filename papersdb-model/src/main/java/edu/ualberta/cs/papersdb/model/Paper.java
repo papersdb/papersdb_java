@@ -179,7 +179,8 @@ public class Paper extends AbstractPapersdbModel {
     }
 
     @ElementCollection(targetClass = Collaboration.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "PAPER_COLLABORATION", joinColumns = @JoinColumn(name = "PAPER_ID"))
+    @CollectionTable(name = "PAPER_COLLABORATION",
+        joinColumns = @JoinColumn(name = "PAPER_ID"))
     @Column(name = "COLLABORATION_ID", nullable = false)
     @Enumerated(EnumType.STRING)
     // @Type(type = "collaboration")
