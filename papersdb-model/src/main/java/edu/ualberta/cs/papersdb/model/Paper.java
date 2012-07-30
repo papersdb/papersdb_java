@@ -45,7 +45,6 @@ public class Paper extends AbstractPapersdbModel {
     private String pubAbstract;
     private String keywords;
     private String extraInformation;
-    private Date paperDate;
     private Date dbInsertDate;
     private Date dbUpdateDate;
     private User userSubmittedBy;
@@ -96,16 +95,6 @@ public class Paper extends AbstractPapersdbModel {
 
     public void setExtraInformation(String extraInformation) {
         this.extraInformation = extraInformation;
-    }
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "PAPER_DATE")
-    public Date getPaperDate() {
-        return paperDate;
-    }
-
-    public void setPaperDate(Date date) {
-        this.paperDate = date;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -212,9 +201,10 @@ public class Paper extends AbstractPapersdbModel {
         this.authors = authors;
     }
 
+    @Null(message = "{edu.ualberta.cs.papersDb.model.Paper.publication.NotEmpty}")
     @OneToOne(cascade = CascadeType.ALL)
     @ForeignKey(name = "FK_PAPER_PUBLICATION")
-    @JoinColumn(name = "PUBLICATION_ID", nullable = true)
+    @JoinColumn(name = "PUBLICATION_ID", nullable = false)
     public Publication getPublication() {
         return publication;
     }

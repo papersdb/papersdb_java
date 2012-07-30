@@ -243,7 +243,6 @@ public class Importer {
             Paper paper = new Paper();
             paper.setTitle(rs.getString("title"));
             paper.setKeywords(rs.getString("keywords"));
-            paper.setPaperDate(rs.getDate("published"));
             paper.setDbUpdateDate(rs.getDate("updated"));
             // paper.set(rs.getString(""));
 

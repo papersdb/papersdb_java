@@ -120,7 +120,6 @@ ALTER TABLE paper
              CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
       CHANGE `extra_info` EXTRA_INFORMATION TEXT
              CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
-      CHANGE `published` PAPER_DATE DATE NULL DEFAULT NULL,
       CHANGE `rank_id` RANKING_ID INT(11) NULL DEFAULT NULL,
       CHANGE `updated` DB_UPDATE_DATE DATETIME NULL DEFAULT NULL,
       CHANGE `user`  USER_TAGS VARCHAR(255)
@@ -275,7 +274,80 @@ ALTER TABLE publisher
 
 --
 
+CREATE TABLE `publication` (
+  `DISCRIMINATOR` varchar(31) NOT NULL,
+  `ID` bigint(20) NOT NULL auto_increment,
+  `PUB_ID` bigint(20) NOT NULL,
+  `VERSION` int(11) NOT NULL,
+  `PUBLISHED_DATE` datetime NOT NULL,
+  `NAME` varchar(255) DEFAULT NULL,
+  `BOOK_TITLE` varchar(255) DEFAULT NULL,
+  `EDITION` varchar(255) DEFAULT NULL,
+  `EDITOR` varchar(255) DEFAULT NULL,
+  `CHAPTER` varchar(255) DEFAULT NULL,
+  `NUMBER` varchar(255) DEFAULT NULL,
+  `PAGES` varchar(255) DEFAULT NULL,
+  `VOLUME` varchar(255) DEFAULT NULL,
+  `INSTITUTION` varchar(255) DEFAULT NULL,
+  `THESIS_TYPE` varchar(255) DEFAULT NULL,
+  `BOOK_PUBLISHER` tinyblob,
+  `PUBLISHER_ID` bigint(20) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Jounals have: editor, volume, number, and pages
+
+INSERT INTO publication (discriminator,pub_id,editor)
+       SELECT 'JournalPub',pub_cat.pub_id,pci.value
+       FROM cat_info
+       JOIN category ON category.cat_id=cat_info.cat_id
+       JOIN info ON info.info_id=cat_info.info_id AND info.name='Editor'
+       JOIN pub_cat ON pub_cat.cat_id=category.cat_id
+       JOIN pub_cat_info pci ON pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id AND pci.info_id=info.info_id
+       WHERE category.category='In Journal';
+
+UPDATE publication pub, cat_info, category, info, pub_cat, pub_cat_info pci
+       SET pub.volume=pci.value
+       WHERE info.name='Volume'
+       AND category.cat_id=cat_info.cat_id
+       AND info.info_id=cat_info.info_id
+       AND pub_cat.cat_id=category.cat_id
+       AND pci.pub_id=pub_cat.pub_id
+       AND pci.cat_id=pub_cat.cat_id
+       AND pci.info_id=info.info_id
+       AND pub.pub_id=pub_cat.pub_id
+       AND category.category='In Journal';
+
+UPDATE publication pub, cat_info, category, info, pub_cat, pub_cat_info pci
+       SET pub.number=pci.value
+       WHERE info.name='Number'
+       AND category.cat_id=cat_info.cat_id
+       AND info.info_id=cat_info.info_id
+       AND pub_cat.cat_id=category.cat_id
+       AND pci.pub_id=pub_cat.pub_id
+       AND pci.cat_id=pub_cat.cat_id
+       AND pci.info_id=info.info_id
+       AND pub.pub_id=pub_cat.pub_id
+       AND category.category='In Journal';
+
+UPDATE publication pub, cat_info, category, info, pub_cat, pub_cat_info pci
+       SET pub.pages=pci.value
+       WHERE info.name='Pages'
+       AND category.cat_id=cat_info.cat_id
+       AND info.info_id=cat_info.info_id
+       AND pub_cat.cat_id=category.cat_id
+       AND pci.pub_id=pub_cat.pub_id
+       AND pci.cat_id=pub_cat.cat_id
+       AND pci.info_id=info.info_id
+       AND pub.pub_id=pub_cat.pub_id
+       AND category.category='In Journal';
+
 \q
+
+ALTER TABLE publication
+      MODIFY COLUMN ID BIGINT(20) NOT NULL,
+      ADD KEY `FK_PUBLICATION_PUBLISHER` (`PUBLISHER_ID`),
+      Add CONSTRAINT `FK_PUBLICATION_PUBLISHER` FOREIGN KEY (`PUBLISHER_ID`) REFERENCES `publisher` (`ID`)
 
 ALTER TABLE paper
       ADD CONSTRAINT FK_PAPER_PUBLICATION FOREIGN KEY (PUBLICATION_ID)
@@ -300,26 +372,4 @@ DROP TABLE venue_occur;
 DROP TABLE venue_rankings;
 DROP TABLE venue_vopts;
 DROP TABLE vopts;
-
-CREATE TABLE `publication` (
-  `DISCRIMINATOR` varchar(31) NOT NULL,
-  `ID` bigint(20) NOT NULL,
-  `VERSION` int(11) NOT NULL,
-  `DATE` datetime NOT NULL,
-  `NAME` varchar(255) DEFAULT NULL,
-  `BOOK_TITLE` varchar(255) DEFAULT NULL,
-  `EDITION` varchar(255) DEFAULT NULL,
-  `EDITOR` varchar(255) DEFAULT NULL,
-  `CHAPTER` varchar(255) DEFAULT NULL,
-  `NUMBER` varchar(255) DEFAULT NULL,
-  `PAGES` varchar(255) DEFAULT NULL,
-  `VOLUME` varchar(255) DEFAULT NULL,
-  `INSTITUTION` varchar(255) DEFAULT NULL,
-  `THESIS_TYPE` varchar(255) DEFAULT NULL,
-  `BOOK_PUBLISHER` tinyblob,
-  `PUBLISHER_ID` bigint(20) NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `FK_PUBLICATION_PUBLISHER` (`PUBLISHER_ID`),
-  CONSTRAINT `FK_PUBLICATION_PUBLISHER` FOREIGN KEY (`PUBLISHER_ID`) REFERENCES `publisher` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

@@ -279,7 +279,7 @@ public class TestPaper extends TestHibernate {
 
         JournalPub pub = new JournalPub();
         pub.setName(name);
-        pub.setDate(new Date());
+        pub.setPublishedDate(new Date());
         pub.setPaper(paper);
         pub.setPublisher(publisher);
         getJdbcUtils().addPublication(pub);

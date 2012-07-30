@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.ForeignKey;
@@ -31,7 +33,7 @@ public abstract class Publication extends AbstractPapersdbModel {
     private static final long serialVersionUID = 1L;
 
     private String name;
-    private Date date;
+    private Date publishedDate;
     private Publisher publisher;
     private Paper paper;
 
@@ -44,14 +46,15 @@ public abstract class Publication extends AbstractPapersdbModel {
         this.name = name;
     }
 
-    @NotNull(message = "{edu.ualberta.cs.papersDb.model.Publication.date.NotEmpty}")
-    @Column(name = "DATE", nullable = false)
-    public Date getDate() {
-        return date;
+    @Temporal(TemporalType.DATE)
+    @NotNull(message = "{edu.ualberta.cs.papersDb.model.Publication.publishedDate.NotEmpty}")
+    @Column(name = "PUBLISHED_DATE", nullable = false)
+    public Date getPublishedDate() {
+        return publishedDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setPublishedDate(Date date) {
+        this.publishedDate = date;
     }
 
     @NotNull(message = "{edu.ualberta.cs.papersDb.model.Publication.publisher.NotEmpty}")
@@ -66,7 +69,6 @@ public abstract class Publication extends AbstractPapersdbModel {
         this.publisher = publisher;
     }
 
-    @NotNull(message = "{edu.ualberta.cs.papersDb.model.Publication.paper.NotEmpty}")
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "publication", orphanRemoval = true)
     public Paper getPaper() {
         return paper;
