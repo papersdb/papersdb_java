@@ -1,5 +1,11 @@
 -- pubDB to papersdb migrate script
 
+-- command to run
+-- cd ~/proj/aicml/papersdb2 && \
+-- mysqladmin -uroot -paztec24 -f drop pubDB create pubDB && \
+-- pv pubDB_20120722.sql.gz | gzip -dc | mysql -uroot -paztec24 pubdb && \
+-- mysql -uroot -paztec24 pubdb < papersdb-model/upgrade_pubdb_papersdb.sql
+
 -- fix errors
 UPDATE user SET name='Pandora Lam' WHERE name='PandoraLam';
 UPDATE user SET name='Idanis Diaz' WHERE name='idanis';
@@ -297,50 +303,27 @@ CREATE TABLE `publication` (
 
 -- Jounals have: editor, volume, number, and pages
 
-INSERT INTO publication (discriminator,pub_id,editor)
-       SELECT 'JournalPub',pub_cat.pub_id,pci.value
-       FROM cat_info
-       JOIN category ON category.cat_id=cat_info.cat_id
-       JOIN info ON info.info_id=cat_info.info_id AND info.name='Editor'
-       JOIN pub_cat ON pub_cat.cat_id=category.cat_id
-       JOIN pub_cat_info pci ON pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id AND pci.info_id=info.info_id
+INSERT INTO publication (discriminator,pub_id,editor,volume,`number`,pages)
+       SELECT 'JournalPub',pub_cat.pub_id,
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Editor'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Volume'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Number'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Pages'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id)
+       FROM pub_cat
+       JOIN category ON category.cat_id=pub_cat.cat_id
        WHERE category.category='In Journal';
-
-UPDATE publication pub, cat_info, category, info, pub_cat, pub_cat_info pci
-       SET pub.volume=pci.value
-       WHERE info.name='Volume'
-       AND category.cat_id=cat_info.cat_id
-       AND info.info_id=cat_info.info_id
-       AND pub_cat.cat_id=category.cat_id
-       AND pci.pub_id=pub_cat.pub_id
-       AND pci.cat_id=pub_cat.cat_id
-       AND pci.info_id=info.info_id
-       AND pub.pub_id=pub_cat.pub_id
-       AND category.category='In Journal';
-
-UPDATE publication pub, cat_info, category, info, pub_cat, pub_cat_info pci
-       SET pub.number=pci.value
-       WHERE info.name='Number'
-       AND category.cat_id=cat_info.cat_id
-       AND info.info_id=cat_info.info_id
-       AND pub_cat.cat_id=category.cat_id
-       AND pci.pub_id=pub_cat.pub_id
-       AND pci.cat_id=pub_cat.cat_id
-       AND pci.info_id=info.info_id
-       AND pub.pub_id=pub_cat.pub_id
-       AND category.category='In Journal';
-
-UPDATE publication pub, cat_info, category, info, pub_cat, pub_cat_info pci
-       SET pub.pages=pci.value
-       WHERE info.name='Pages'
-       AND category.cat_id=cat_info.cat_id
-       AND info.info_id=cat_info.info_id
-       AND pub_cat.cat_id=category.cat_id
-       AND pci.pub_id=pub_cat.pub_id
-       AND pci.cat_id=pub_cat.cat_id
-       AND pci.info_id=info.info_id
-       AND pub.pub_id=pub_cat.pub_id
-       AND category.category='In Journal';
 
 \q
 
