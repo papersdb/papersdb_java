@@ -12,6 +12,14 @@ DELETE ua FROM user_author ua LEFT JOIN `user` ON user.login=ua.login WHERE user
 
 DELETE pa FROM pub_author pa LEFT JOIN publication pub ON pub.pub_id=pa.pub_id WHERE pub.pub_id is null;
 
+UPDATE publication pub,venue,(SELECT `name`,MIN(venue_id) venue_id,COUNT(*) cnt FROM venue GROUP BY `name`) a
+       SET pub.venue_id=a.venue_id
+       WHERE venue.venue_id=pub.venue_id
+       AND a.name=venue.name
+       AND a.cnt > 1;
+
+DELETE venue FROM venue LEFT JOIN publication pub ON pub.venue_id=venue.venue_id WHERE pub.pub_id is null;
+
 DELETE FROM user WHERE verified=0;
 
 --
@@ -92,6 +100,9 @@ ALTER TABLE user_author
           REFERENCES user (ID) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 --
+
+UPDATE publication SET rank_id=6 WHERE rank_id=5;
+UPDATE publication SET rank_id=5 WHERE rank_id=0;
 
 RENAME TABLE publication TO paper;
 ALTER TABLE paper ENGINE=InnoDB;
@@ -217,8 +228,8 @@ DROP TABLE pub_col;
 
 --
 
-ALTER TABLE pub_author ENGINE=InnoDB;
 RENAME TABLE pub_author TO author_ranked;
+ALTER TABLE author_ranked ENGINE=InnoDB;
 
 ALTER TABLE `author_ranked` DROP PRIMARY KEY,
       ADD COLUMN `ID` bigint(20) NOT NULL auto_increment FIRST,
@@ -239,6 +250,28 @@ ALTER TABLE author_ranked
           REFERENCES author (ID) ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 ALTER TABLE user MODIFY COLUMN ID BIGINT(20) NOT NULL;
+
+--
+
+UPDATE venue SET `name`=title WHERE name is null or trim(name)='';
+
+UPDATE venue SET rank_id=6 WHERE rank_id=5;
+UPDATE venue SET rank_id=5 WHERE rank_id=0;
+
+RENAME TABLE venue TO publisher;
+ALTER TABLE publisher ENGINE=InnoDB;
+
+ALTER TABLE publisher
+      CHANGE COLUMN `venue_id` `ID` bigint(20) NOT NULL FIRST,
+      ADD COLUMN VERSION INT(11) NOT NULL AFTER `ID`,
+      CHANGE `name` `NAME` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+      CHANGE `title` `ACRONYM` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+      CHANGE `url` URL VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+      CHANGE `rank_id` RANKING_ID int(11) DEFAULT NULL,
+      ADD COLUMN `CUSTOM_RANKING` varchar(255) DEFAULT NULL AFTER RANKING_ID,
+      DROP COLUMN editor,
+      DROP COLUMN `date`,
+      ADD CONSTRAINT NAME UNIQUE KEY(NAME);
 
 --
 
@@ -263,7 +296,6 @@ DROP TABLE pub_cat_info;
 DROP TABLE pub_pending;
 DROP TABLE pub_valid;
 DROP TABLE tag_ml_history;
-DROP TABLE venue;
 DROP TABLE venue_occur;
 DROP TABLE venue_rankings;
 DROP TABLE venue_vopts;
@@ -290,13 +322,4 @@ CREATE TABLE `publication` (
   KEY `FK_PUBLICATION_PUBLISHER` (`PUBLISHER_ID`),
   CONSTRAINT `FK_PUBLICATION_PUBLISHER` FOREIGN KEY (`PUBLISHER_ID`) REFERENCES `publisher` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE publisher (
-    ID BIGINT(20) NOT NULL,
-    VERSION INT(11) NOT NULL,
-    NAME VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-    RANKING_ID VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
-    CONSTRAINT NAME UNIQUE KEY(NAME),
-    PRIMARY KEY (ID)
-) ENGINE=InnoDB COLLATE=latin1_swedish_ci;
 
