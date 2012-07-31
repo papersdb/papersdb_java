@@ -9,16 +9,16 @@ import javax.persistence.Entity;
 public class TechnicalReportPub extends Publication {
     private static final long serialVersionUID = 1L;
 
-    private String intitution;
+    private String institution;
     private String number;
 
     @Column(name = "INSTITUTION")
-    public String getIntitution() {
-        return intitution;
+    public String getInstitution() {
+        return institution;
     }
 
-    public void setIntitution(String intitution) {
-        this.intitution = intitution;
+    public void setInstitution(String institution) {
+        this.institution = institution;
     }
 
     @Column(name = "NUMBER")

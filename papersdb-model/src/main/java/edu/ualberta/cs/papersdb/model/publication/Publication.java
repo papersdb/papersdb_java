@@ -32,19 +32,9 @@ import edu.ualberta.cs.papersdb.model.Publisher;
 public abstract class Publication extends AbstractPapersdbModel {
     private static final long serialVersionUID = 1L;
 
-    private String name;
-    private Date publishedDate;
-    private Publisher publisher;
-    private Paper paper;
-
-    @Column(name = "NAME")
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    protected Publisher publisher;
+    protected Date publishedDate;
+    protected Paper paper;
 
     @Temporal(TemporalType.DATE)
     @NotNull(message = "{edu.ualberta.cs.papersDb.model.Publication.publishedDate.NotEmpty}")
@@ -69,7 +59,10 @@ public abstract class Publication extends AbstractPapersdbModel {
         this.publisher = publisher;
     }
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "publication", orphanRemoval = true)
+    @NotNull(message = "{edu.ualberta.cs.papersDb.model.Publication.paper.NotEmpty}")
+    @OneToOne(cascade = CascadeType.ALL)
+    @ForeignKey(name = "FK_PUBLICATION_PAPER")
+    @JoinColumn(name = "PAPER_ID", nullable = false)
     public Paper getPaper() {
         return paper;
     }

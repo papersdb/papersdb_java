@@ -6,6 +6,9 @@
 -- pv pubDB_20120722.sql.gz | gzip -dc | mysql -uroot -paztec24 pubdb && \
 -- mysql -uroot -paztec24 pubdb < papersdb-model/upgrade_pubdb_papersdb.sql
 
+
+-- cd ~/proj/aicml/papersdb2 && mysqladmin -uroot -paztec24 -f drop pubDB create pubDB && pv pubDB_20120722.sql.gz | gzip -dc | mysql -uroot -paztec24 pubdb && mysql -uroot -paztec24 pubdb < papersdb-model/upgrade_pubdb_papersdb.sql
+
 -- fix errors
 UPDATE user SET name='Pandora Lam' WHERE name='PandoraLam';
 UPDATE user SET name='Idanis Diaz' WHERE name='idanis';
@@ -325,12 +328,208 @@ INSERT INTO publication (discriminator,pub_id,editor,volume,`number`,pages)
        JOIN category ON category.cat_id=pub_cat.cat_id
        WHERE category.category='In Journal';
 
+-- Conferences have: editor, and pages
+
+INSERT INTO publication (discriminator,pub_id,editor,pages)
+       SELECT 'Conference',pub_cat.pub_id,
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Editor'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Pages'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id)
+       FROM pub_cat
+       JOIN category ON category.cat_id=pub_cat.cat_id
+       WHERE category.category='In Conference';
+
+-- Book chapters have: book title, editor, edition, volume, number, chapter and pages
+
+INSERT INTO publication (discriminator,pub_id,book_title,editor,edition,volume,`number`,chapter,pages)
+       SELECT 'BookChapter',pub_cat.pub_id,
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Book Title'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Editor'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Edition'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Volume'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Number'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Chapter'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Pages'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id)
+       FROM pub_cat
+       JOIN category ON category.cat_id=pub_cat.cat_id
+       WHERE category.category='In Book';
+
+-- Books have: book title, editor, edition, and volume
+
+INSERT INTO publication (discriminator,pub_id,book_title,editor,edition,volume)
+       SELECT 'Book',pub_cat.pub_id,
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Book Title'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Editor'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Edition'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Volume'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id)
+       FROM pub_cat
+       JOIN category ON category.cat_id=pub_cat.cat_id
+       WHERE category.category='Book';
+
+-- Magazines have:editor, volume, and number
+
+INSERT INTO publication (discriminator,pub_id,editor,volume,`number`)
+       SELECT 'Magazine',pub_cat.pub_id,
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Editor'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Volume'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Number'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id)
+       FROM pub_cat
+       JOIN category ON category.cat_id=pub_cat.cat_id
+       WHERE category.category='In Journal';
+
+-- Technical reports have:institution and number
+
+INSERT INTO publication (discriminator,pub_id,institution,`number`)
+       SELECT 'TechnicalReport',pub_cat.pub_id,
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='institution'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Number'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id)
+       FROM pub_cat
+       JOIN category ON category.cat_id=pub_cat.cat_id
+       WHERE category.category='Technical Report';
+
+-- Thesis have:institution and type
+
+INSERT INTO publication (discriminator,pub_id,institution,`number`)
+       SELECT 'JournalPub',pub_cat.pub_id,
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='School'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Type'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id)
+       FROM pub_cat
+       JOIN category ON category.cat_id=pub_cat.cat_id
+       WHERE category.category='MSc Thesis';
+
+INSERT INTO publication (discriminator,pub_id,institution)
+       SELECT 'JournalPub',pub_cat.pub_id,
+          (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Type'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id)
+       FROM pub_cat
+       JOIN category ON category.cat_id=pub_cat.cat_id
+       WHERE category.category='MSc Thesis';
+
+-- Videos have: editor, edition, volume, number
+
+INSERT INTO publication (discriminator,pub_id,editor,edition,volume,`number`)
+       SELECT 'Video',pub_cat.pub_id,
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Editor'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Edition'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Volume'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Number'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id)
+       FROM pub_cat
+       JOIN category ON category.cat_id=pub_cat.cat_id
+       WHERE category.category='In Book';
+
+-- Workshops have: editor, edition, volume, number
+
+INSERT INTO publication (discriminator,pub_id,book_title,editor,edition,volume,`number`,pages)
+       SELECT 'BookChapter',pub_cat.pub_id,
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Book Title'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Editor'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Edition'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Volume'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Number'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id),
+       (SELECT pci.value
+               FROM pub_cat_info pci
+               JOIN info ON info.info_id=pci.info_id AND info.name='Pages'
+               WHERE pci.pub_id=pub_cat.pub_id AND pci.cat_id=pub_cat.cat_id)
+       FROM pub_cat
+       JOIN category ON category.cat_id=pub_cat.cat_id
+       WHERE category.category='In Book';
+
 \q
+
+-- TODO: link publications to publishers
 
 ALTER TABLE publication
       MODIFY COLUMN ID BIGINT(20) NOT NULL,
       ADD KEY `FK_PUBLICATION_PUBLISHER` (`PUBLISHER_ID`),
-      Add CONSTRAINT `FK_PUBLICATION_PUBLISHER` FOREIGN KEY (`PUBLISHER_ID`) REFERENCES `publisher` (`ID`)
+      ADD CONSTRAINT `FK_PUBLICATION_PUBLISHER` FOREIGN KEY (`PUBLISHER_ID`) REFERENCES `publisher` (`ID`);
 
 ALTER TABLE paper
       ADD CONSTRAINT FK_PAPER_PUBLICATION FOREIGN KEY (PUBLICATION_ID)

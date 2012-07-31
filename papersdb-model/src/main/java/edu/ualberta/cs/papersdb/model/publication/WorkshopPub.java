@@ -4,15 +4,12 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-import edu.ualberta.cs.papersdb.model.Publisher;
-
 @Entity
 @DiscriminatorValue("Workshop")
 public class WorkshopPub extends Publication {
     private static final long serialVersionUID = 1L;
 
     private String bookTitle;
-    private Publisher bookPublisher;
     private String editor;
     private String edition;
     private String volume;
@@ -26,15 +23,6 @@ public class WorkshopPub extends Publication {
 
     public void setBookTitle(String bookTitle) {
         this.bookTitle = bookTitle;
-    }
-
-    @Column(name = "BOOK_PUBLISHER")
-    public Publisher getBookPublisher() {
-        return bookPublisher;
-    }
-
-    public void setBookPublisher(Publisher bookPpublisher) {
-        this.bookPublisher = bookPpublisher;
     }
 
     @Column(name = "EDITOR")

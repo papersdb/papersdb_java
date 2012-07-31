@@ -10,7 +10,7 @@ public class ThesisPub extends Publication {
     private static final long serialVersionUID = 1L;
 
     private String intitution;
-    private String type;
+    private String thesisType;
 
     @Column(name = "INSTITUTION")
     public String getIntitution() {
@@ -22,11 +22,11 @@ public class ThesisPub extends Publication {
     }
 
     @Column(name = "THESIS_TYPE")
-    public String getType() {
-        return type;
+    public String getThesisType() {
+        return thesisType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setThesisType(String thesisType) {
+        this.thesisType = thesisType;
     }
 }

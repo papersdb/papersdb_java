@@ -1,17 +1,8 @@
 package edu.ualberta.cs.papersdb.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Cascade;
-
-import edu.ualberta.cs.papersdb.model.publication.Publication;
 
 @Entity
 @Table(name = "PUBLISHER")
@@ -23,7 +14,6 @@ public class Publisher extends AbstractPapersdbModel {
     private String url;
     private Ranking ranking;
     private String customRanking;
-    private Set<Publication> publications = new HashSet<Publication>(0);
 
     @Column(name = "NAME", unique = true, nullable = false)
     public String getName() {
@@ -68,16 +58,6 @@ public class Publisher extends AbstractPapersdbModel {
 
     public void setCustomRanking(String customRanking) {
         this.customRanking = customRanking;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "publisher")
-    @Cascade({ org.hibernate.annotations.CascadeType.SAVE_UPDATE })
-    public Set<Publication> getPublications() {
-        return this.publications;
-    }
-
-    public void setPublications(Set<Publication> publications) {
-        this.publications = publications;
     }
 
 }

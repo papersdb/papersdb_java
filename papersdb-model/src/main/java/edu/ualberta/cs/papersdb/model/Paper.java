@@ -23,10 +23,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Null;
 
-import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -34,10 +32,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 import edu.ualberta.cs.papersdb.model.publication.Publication;
 import edu.ualberta.cs.papersdb.model.user.User;
 
+// TODO add foreign keys so that title and publication are unique
+
 @Entity
-@Table(name = "PAPER",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "TITLE", "PUBLICATION_ID" }) })
+@Table(name = "PAPER")
 public class Paper extends AbstractPapersdbModel {
     private static final long serialVersionUID = 1L;
 
@@ -181,7 +179,7 @@ public class Paper extends AbstractPapersdbModel {
         this.collaborations = collaborations;
     }
 
-    @Column(name = "PUBLIC")
+    @Column(name = "IS_PUBLIC")
     public boolean isPublic() {
         return isPublic;
     }
@@ -201,10 +199,7 @@ public class Paper extends AbstractPapersdbModel {
         this.authors = authors;
     }
 
-    @Null(message = "{edu.ualberta.cs.papersDb.model.Paper.publication.NotEmpty}")
-    @OneToOne(cascade = CascadeType.ALL)
-    @ForeignKey(name = "FK_PAPER_PUBLICATION")
-    @JoinColumn(name = "PUBLICATION_ID", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "paper", orphanRemoval = true)
     public Publication getPublication() {
         return publication;
     }

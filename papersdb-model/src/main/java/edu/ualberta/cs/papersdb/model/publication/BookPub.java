@@ -12,6 +12,7 @@ public class BookPub extends Publication {
     private String bookTitle;
     private String editor;
     private String edition;
+    private String volume;
 
     @Column(name = "BOOK_TITLE")
     public String getBookTitle() {
@@ -38,6 +39,15 @@ public class BookPub extends Publication {
 
     public void setEdition(String edition) {
         this.edition = edition;
+    }
+
+    @Column(name = "VOLUME")
+    public String getVolume() {
+        return volume;
+    }
+
+    public void setVolume(String volume) {
+        this.volume = volume;
     }
 
 }
